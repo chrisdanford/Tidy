@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="GridViewCell" id="w8N-eg-Xqc" customClass="GridViewCell" customModule="Tidy" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dob-v0-1oF">
+                        <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+                        <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </imageView>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="4xZ-lK-MqR">
+                        <rect key="frame" x="0.0" y="0.0" width="28" height="28"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="28" placeholder="YES" id="dWL-t9-Ol0"/>
+                            <constraint firstAttribute="width" constant="28" placeholder="YES" id="eeg-3R-txC"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duration" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="b8V-YR-fTi">
+                        <rect key="frame" x="17" y="60" width="59" height="18"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.30705325700000002" colorSpace="custom" customColorSpace="displayP3"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="badge-ready" translatesAutoresizingMaskIntoConstraints="NO" id="Uv0-de-qEj">
+                        <rect key="frame" x="4" y="4" width="72" height="72"/>
+                    </imageView>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="dob-v0-1oF" firstAttribute="trailing" secondItem="w8N-eg-Xqc" secondAttribute="trailing" id="2Cy-WO-4pX"/>
+                <constraint firstItem="Uv0-de-qEj" firstAttribute="top" secondItem="dob-v0-1oF" secondAttribute="top" constant="4" id="2Rt-EL-Ccn"/>
+                <constraint firstItem="4xZ-lK-MqR" firstAttribute="top" secondItem="w8N-eg-Xqc" secondAttribute="top" id="5MO-Lw-tbl"/>
+                <constraint firstItem="dob-v0-1oF" firstAttribute="trailing" secondItem="b8V-YR-fTi" secondAttribute="trailing" constant="4" id="DdY-5C-K0Q"/>
+                <constraint firstAttribute="bottom" secondItem="b8V-YR-fTi" secondAttribute="bottom" constant="2" id="GMe-dx-cES"/>
+                <constraint firstAttribute="bottom" secondItem="dob-v0-1oF" secondAttribute="bottom" id="I2X-MG-vKn"/>
+                <constraint firstItem="dob-v0-1oF" firstAttribute="trailing" secondItem="Uv0-de-qEj" secondAttribute="trailing" constant="4" id="IoH-05-PPg"/>
+                <constraint firstItem="dob-v0-1oF" firstAttribute="leading" secondItem="w8N-eg-Xqc" secondAttribute="leading" id="mKQ-en-5CU"/>
+                <constraint firstItem="dob-v0-1oF" firstAttribute="top" secondItem="w8N-eg-Xqc" secondAttribute="top" id="oc6-Mj-zU7"/>
+                <constraint firstItem="4xZ-lK-MqR" firstAttribute="leading" secondItem="w8N-eg-Xqc" secondAttribute="leading" id="poc-Xz-Q1a"/>
+                <constraint firstItem="b8V-YR-fTi" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="w8N-eg-Xqc" secondAttribute="leading" symbolic="YES" id="z1h-go-rYY"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="cXM-sm-oVL"/>
+            <connections>
+                <outlet property="completeBadgeImageView" destination="Uv0-de-qEj" id="yLX-f1-mcN"/>
+                <outlet property="imageView" destination="dob-v0-1oF" id="0DG-u0-tcj"/>
+                <outlet property="labelStats" destination="b8V-YR-fTi" id="FQu-4O-4I9"/>
+                <outlet property="livePhotoBadgeImageView" destination="4xZ-lK-MqR" id="5u3-v0-8uv"/>
+            </connections>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="badge-ready" width="72" height="72"/>
+    </resources>
+</document>
