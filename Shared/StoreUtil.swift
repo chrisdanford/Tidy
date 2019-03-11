@@ -39,7 +39,7 @@ class StoreUtil {
     static func requestReview() {
         if let currentVer = currentVersion {
             SKStoreReviewController.requestReview()
-            dispatch(AppAction.SetLastReviewRequestedAppVersion(lastReviewRequestedAppVersion: currentVer))
+            AppManager.instance.setLastReviewRequestedAppVersion(currentVer: currentVer)
         }
     }
 }

@@ -31,86 +31,49 @@ struct AppState: StateType {
     }
 }
 
-struct AppAction {
-    // MARK:- ACTIONS
-    struct SetTranscode: Action {
-        let transcode: Transcode.State
-    }
-
-    struct SetDuplicates: Action {
-        let duplicates: Duplicates.State
-    }
-
-    struct SetSizes: Action {
-        let sizes: Sizes.State
-    }
-
-    struct SetLargeFiles: Action {
-        let largeFiles: LargeFiles.State
-    }
-
-    struct SetRecentlyDeleted: Action {
-        let recentlyDeleted: RecentlyDeleted.State
-    }
-
-    struct SetSavings: Action {
-        let savings: Savings
-    }
-
-    struct SetLastReviewRequestedAppVersion: Action {
-        let lastReviewRequestedAppVersion: String
-    }
-
-    struct SetTotalSavingsBytes: Action {
-        let totalSavingsBytes: UInt64
-    }
-
-    struct SetPreferences: Action {
-        let preferences: Preferences.State
-    }
-
-    struct AppliedTranscode: Action {
-        let savingsStats: Savings.Stats
-    }
-
-    struct AppliedDeleteDuplicates: Action {
-        let savingsStats: Savings.Stats
-    }
-
-    struct DeletedAsset: Action {
-        let savingsStats: Savings.Stats
-    }
+enum AppAction : Action {
+    case setTranscode(Transcode.State)
+    case setDuplicates(Duplicates.State)
+    case setSizes(Sizes.State)
+    case setLargeFiles(LargeFiles.State)
+    case setRecentlyDeleted(RecentlyDeleted.State)
+    case setLastReviewRequestedAppVersion(String)
+    case setPreferences(Preferences.State)
+    case appliedTranscode(Savings.Stats)
+    case appliedDeleteDuplicates(Savings.Stats)
+    case deletedAsset(Savings.Stats)
 }
 
 // MARK:- REDUCERS
 func appReducer(action: Action, state: AppState?) -> AppState {
     NSLog("appReducer action \(type(of: action))")
     var newState = state!
-    switch action {
-    case let action2 as AppAction.SetTranscode:
-        newState.transcode = action2.transcode
-    case let action2 as AppAction.SetDuplicates:
-        newState.duplicates = action2.duplicates
-    case let action2 as AppAction.SetSizes:
-        newState.sizes = action2.sizes
-    case let action2 as AppAction.SetLargeFiles:
-        newState.largeFiles = action2.largeFiles
-    case let action2 as AppAction.SetRecentlyDeleted:
-        newState.recentlyDeleted = action2.recentlyDeleted
-    case let action as AppAction.SetTotalSavingsBytes:
-        newState.preferences.totalSavingsBytes = action.totalSavingsBytes
+    let appAction = action as! AppAction
+    switch appAction {
+    case .setDuplicates(let duplicates):
+        newState.duplicates = duplicates
+    case .setTranscode(let transcode):
+        newState.transcode = transcode
+    case .setSizes(let sizes):
+        newState.sizes = sizes
+    case .setLargeFiles(let largeFiles):
+        newState.largeFiles = largeFiles
+    case .setRecentlyDeleted(let recentlyDeleted):
+        newState.recentlyDeleted = recentlyDeleted
+    case .appliedTranscode(let savingsStats):
+        newState.preferences.totalSavingsBytes += savingsStats.savingsBytes
         Preferences.Persistence.instance.save(state: newState.preferences)
-    case let action as AppAction.AppliedTranscode:
-        newState.preferences.totalSavingsBytes += action.savingsStats.savingsBytes
+    case .appliedDeleteDuplicates(let savingsStats):
+        newState.preferences.totalSavingsBytes += savingsStats.savingsBytes
         Preferences.Persistence.instance.save(state: newState.preferences)
-    case let action as AppAction.AppliedDeleteDuplicates:
-        newState.preferences.totalSavingsBytes += action.savingsStats.savingsBytes
+    case .deletedAsset(let savingsStats):
+        newState.preferences.totalSavingsBytes += savingsStats.savingsBytes
         Preferences.Persistence.instance.save(state: newState.preferences)
-    case let action as AppAction.DeletedAsset:
-        newState.preferences.totalSavingsBytes += action.savingsStats.savingsBytes
+    case .setPreferences(let preferences):
+        newState.preferences = preferences
+    case .setLastReviewRequestedAppVersion(let lastVersionPromptedForReview):
+        newState.preferences.lastVersionPromptedForReview = lastVersionPromptedForReview
         Preferences.Persistence.instance.save(state: newState.preferences)
-    default:
-        fatalError()
     }
     
     // return the new state

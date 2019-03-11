@@ -1,5 +1,5 @@
 //
-//  PreferencesPersistence.swift
+//  Preferences.swift
 //  Tidy iOS
 //
 //  Created by Chris Danford on 3/10/19.
@@ -67,8 +67,7 @@ struct Preferences {
             return State(totalSavingsBytes: totalSavingsBytes, lastVersionPromptedForReview: lastVersionPromptedForReview)
         }
 
-        @objc func onUbiquitousKeyValueStoreDidChangeExternally(notification:Notification)
-        {
+        @objc func onUbiquitousKeyValueStoreDidChangeExternally(notification:Notification) {
             print("onUbiquitousKeyValueStoreDidChangeExternally")
             //        if let userInfo = notification.userInfo {
             //            if let changeReason = userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? NSNumber {
@@ -78,7 +77,7 @@ struct Preferences {
             //                print("ChangedKeys = \(changedKeys)")
             //            }
             //        }
-            dispatch(AppAction.SetPreferences(preferences: state))
+            AppManager.instance.setPreferences(preferences: state)
         }
     }
 }

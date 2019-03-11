@@ -78,7 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
         updateBadgeCount()
 
-        SavingsiCloudPersistence.instance.readRemoteChanges()
+        Preferences.Persistence.instance.readRemoteChanges()
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {

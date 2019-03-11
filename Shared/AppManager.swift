@@ -80,57 +80,60 @@ class AppManager {
         NSLog("clearAndFetchAll 5")
         fetchRecentlyDeleted()
         NSLog("clearAndFetchAll 6")
-        fetchSavings()
+        fetchPreferences()
         NSLog("clearAndFetchAll 7")
     }
 
     func appliedDeletedDuplicates(stats: Savings.Stats) {
-        internalDispatch(AppAction.AppliedDeleteDuplicates(savingsStats: stats))
+        internalDispatch(AppAction.appliedDeleteDuplicates(stats))
     }
-    
     func appliedTranscode(stats: Savings.Stats) {
-        internalDispatch(AppAction.AppliedTranscode(savingsStats: stats))
+        internalDispatch(AppAction.appliedTranscode(stats))
     }
-    
     func deletedAsset(stats: Savings.Stats) {
-        internalDispatch(AppAction.DeletedAsset(savingsStats: stats))
+        internalDispatch(AppAction.deletedAsset(stats))
     }
-
+    func setLastReviewRequestedAppVersion(currentVer: String) {
+        internalDispatch(AppAction.setLastReviewRequestedAppVersion(currentVer))
+    }
+    func setPreferences(preferences: Preferences.State) {
+        internalDispatch(AppAction.setPreferences(preferences))
+    }
     private func fetchTranscode(cancellationToken: CancellationToken) {
-        self.internalDispatch(AppAction.SetTranscode(transcode: .empty()))
+        self.internalDispatch(AppAction.setTranscode(.empty()))
         Transcode.fetch(cancellationToken: cancellationToken) { [weak self] transcode2 in
-            self?.internalDispatch(AppAction.SetTranscode(transcode: transcode2))
+            self?.internalDispatch(AppAction.setTranscode(transcode2))
         }
     }
     private func fetchDuplicates() {
-        self.internalDispatch(AppAction.SetDuplicates(duplicates: .empty()))
+        self.internalDispatch(AppAction.setDuplicates(.empty()))
         Duplicates.fetch() { [weak self] duplicates2 in
-            self?.internalDispatch(AppAction.SetDuplicates(duplicates: duplicates2))
+            self?.internalDispatch(AppAction.setDuplicates(duplicates2))
         }
     }
     private func fetchSizes() {
-        self.internalDispatch(AppAction.SetSizes(sizes: .empty()))
+        self.internalDispatch(AppAction.setSizes(.empty()))
         Sizes.fetch() { [weak self] sizes2 in
-            self?.internalDispatch(AppAction.SetSizes(sizes: sizes2))
+            self?.internalDispatch(AppAction.setSizes(sizes2))
         }
     }
     private func fetchLargeFiles() {
-        self.internalDispatch(AppAction.SetLargeFiles(largeFiles: .empty()))
+        self.internalDispatch(AppAction.setLargeFiles(.empty()))
         LargeFiles.fetch { [weak self] largeFiles in
-            self?.internalDispatch(AppAction.SetLargeFiles(largeFiles: largeFiles))
+            self?.internalDispatch(AppAction.setLargeFiles(largeFiles))
         }
     }
     func fetchRecentlyDeleted() {
-        self.internalDispatch(AppAction.SetRecentlyDeleted(recentlyDeleted: .empty()))
+        self.internalDispatch(AppAction.setRecentlyDeleted(.empty()))
         RecentlyDeleted.fetch() { [weak self] recentlyDeleted2 in
-            self?.internalDispatch(AppAction.SetRecentlyDeleted(recentlyDeleted: recentlyDeleted2))
+            self?.internalDispatch(AppAction.setRecentlyDeleted(recentlyDeleted2))
         }
     }
-    private func fetchSavings() {
+    private func fetchPreferences() {
 //        if let savings = SavingsFilePersistence.read() {
 //            self.internalDispatch(SetSavings(savings: savings))
 //        }
-        let totalSavingsBytes = SavingsiCloudPersistence.instance.totalSavingsBytes
-        self.internalDispatch(AppAction.SetTotalSavingsBytes(totalSavingsBytes: totalSavingsBytes))
+        let preferences = Preferences.Persistence.instance.read()
+        self.internalDispatch(AppAction.setPreferences(preferences))
     }
 }

@@ -149,7 +149,12 @@ class AssetViewController: UIViewController {
     @IBAction func removeAsset(_ sender: AnyObject) {
         let completion = { (success: Bool, error: Error?) -> Void in
             if success {
+                // unregister before doing anything else or else we'll the change will fire and we'll try to refresh the asset we just deleted.
                 PHPhotoLibrary.shared().unregisterChangeObserver(self)
+                
+                let savingsStats = Savings.Stats(count: 1, beforeBytes: self.asset.slow_resourceStats.totalResourcesSizeBytes, afterBytes: 0)
+                AppManager.instance.deletedAsset(stats: savingsStats)
+                AppManager.resetAndFetch()
                 DispatchQueue.main.sync {
                     _ = self.navigationController!.popViewController(animated: true)
                 }
@@ -223,9 +228,6 @@ class AssetViewController: UIViewController {
         } else {
             trashButton.isEnabled = asset.canPerform(.delete)
         }
-        
-        // TODO: Fix the delete feature.
-        trashButton.isEnabled = false
     }
     
     // MARK: Image display
