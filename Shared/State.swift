@@ -15,53 +15,63 @@ struct AppState: StateType {
     var transcode: Transcode.State
     var recentlyDeleted: RecentlyDeleted.State
     var savings: Savings
-    var totalSavingsBytes: UInt64
+    var preferences: Preferences.State
 
     var badgeCount: Int {
         return duplicates.badgeCount + transcode.badgeCount + recentlyDeleted.badgeCount
     }
     
     static func empty() -> AppState {
-        return AppState(sizes: Sizes.State.empty(),
-                        duplicates: Duplicates.State.empty(),
-                        transcode: Transcode.State.empty(),
-                        recentlyDeleted: RecentlyDeleted.State.empty(),
-                        savings: Savings.empty(),
-                        totalSavingsBytes: 0)
+        return AppState(sizes: .empty(),
+                        duplicates: .empty(),
+                        transcode: .empty(),
+                        recentlyDeleted: .empty(),
+                        savings: .empty(),
+                        preferences: .empty())
     }
 }
 
-// MARK:- ACTIONS
-struct SetTranscode: Action {
-    let transcode: Transcode.State
-}
+struct AppAction {
+    // MARK:- ACTIONS
+    struct SetTranscode: Action {
+        let transcode: Transcode.State
+    }
 
-struct SetDuplicates: Action {
-    let duplicates: Duplicates.State
-}
+    struct SetDuplicates: Action {
+        let duplicates: Duplicates.State
+    }
 
-struct SetSizes: Action {
-    let sizes: Sizes.State
-}
+    struct SetSizes: Action {
+        let sizes: Sizes.State
+    }
 
-struct SetRecentlyDeleted: Action {
-    let recentlyDeleted: RecentlyDeleted.State
-}
+    struct SetRecentlyDeleted: Action {
+        let recentlyDeleted: RecentlyDeleted.State
+    }
 
-struct SetSavings: Action {
-    let savings: Savings
-}
+    struct SetSavings: Action {
+        let savings: Savings
+    }
 
-struct SetTotalSavingsBytesFromiCloud: Action {
-    let totalSavingsBytes: UInt64
-}
+    struct SetLastReviewRequestedAppVersion: Action {
+        let lastReviewRequestedAppVersion: String
+    }
 
-struct AppliedTranscode: Action {
-    let savingsStats: Savings.Stats
-}
+    struct SetTotalSavingsBytes: Action {
+        let totalSavingsBytes: UInt64
+    }
 
-struct AppliedDeleteDuplicates: Action {
-    let savingsStats: Savings.Stats
+    struct SetPreferences: Action {
+        let preferences: Preferences.State
+    }
+
+    struct AppliedTranscode: Action {
+        let savingsStats: Savings.Stats
+    }
+
+    struct AppliedDeleteDuplicates: Action {
+        let savingsStats: Savings.Stats
+    }
 }
 
 // MARK:- REDUCERS
@@ -69,30 +79,33 @@ func appReducer(action: Action, state: AppState?) -> AppState {
     NSLog("appReducer action \(type(of: action))")
     var newState = state!
     switch action {
-    case let action2 as SetTranscode:
+    case let action2 as AppAction.SetTranscode:
         newState.transcode = action2.transcode
-    case let action2 as SetDuplicates:
+    case let action2 as AppAction.SetDuplicates:
         newState.duplicates = action2.duplicates
-    case let action2 as SetSizes:
+    case let action2 as AppAction.SetSizes:
         newState.sizes = action2.sizes
-    case let action2 as SetRecentlyDeleted:
+    case let action2 as AppAction.SetRecentlyDeleted:
         newState.recentlyDeleted = action2.recentlyDeleted
 //    case let action as SetSavings:
 //        newState.savings = action.savings
-    case let action as SetTotalSavingsBytesFromiCloud:
-        newState.totalSavingsBytes = action.totalSavingsBytes
-    case let action as AppliedTranscode:
+    case let action as AppAction.SetTotalSavingsBytes:
+        newState.preferences.totalSavingsBytes = action.totalSavingsBytes
+        Preferences.Persistence.instance.save(state: newState.preferences)
+    case let action as AppAction.AppliedTranscode:
         newState.savings.transcode = newState.savings.transcode + action.savingsStats
 //        SavingsFilePersistence.write(savings: newState.savings)
 
-        newState.totalSavingsBytes += action.savingsStats.savingsBytes
-        SavingsiCloudPersistence.instance.set(totalSavingsBytes: newState.totalSavingsBytes)
-    case let action as AppliedDeleteDuplicates:
+        newState.preferences.totalSavingsBytes += action.savingsStats.savingsBytes
+        Preferences.Persistence.instance.save(state: newState.preferences)
+//        SavingsiCloudPersistence.instance.set(totalSavingsBytes: newState.totalSavingsBytes)
+    case let action as AppAction.AppliedDeleteDuplicates:
         newState.savings.duplicates = newState.savings.duplicates + action.savingsStats
 //        SavingsFilePersistence.write(savings: newState.savings)
 
-        newState.totalSavingsBytes += action.savingsStats.savingsBytes
-        SavingsiCloudPersistence.instance.set(totalSavingsBytes: newState.totalSavingsBytes)
+        newState.preferences.totalSavingsBytes += action.savingsStats.savingsBytes
+        Preferences.Persistence.instance.save(state: newState.preferences)
+//        SavingsiCloudPersistence.instance.set(totalSavingsBytes: newState.totalSavingsBytes)
 
     default:
         fatalError()

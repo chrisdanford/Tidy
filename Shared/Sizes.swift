@@ -38,7 +38,7 @@ class Sizes {
     }
 
     class func fetch(progress: @escaping (State) -> Void) {
-        let queue = DispatchQueue(label: "Sizes")  // protects
+        let queue = DispatchQueue(label: "Sizes")
         var state = State.empty()
         
         let emitProgressThrottled = throttle(maxFrequency: 0.5) {

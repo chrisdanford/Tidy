@@ -50,7 +50,7 @@
 		837A99B32216C23D002B4996 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 837A99B22216C23D002B4996 /* State.swift */; };
 		837A99B92217AE41002B4996 /* Savings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 837A99B82217AE41002B4996 /* Savings.swift */; };
 		837A99BB2218D91A002B4996 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 837A99BA2218D91A002B4996 /* About.swift */; };
-		83912FF12233B44F004E08A2 /* StoreHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83912FF02233B44F004E08A2 /* StoreHelper.swift */; };
+		83912FF12233B44F004E08A2 /* StoreUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83912FF02233B44F004E08A2 /* StoreUtil.swift */; };
 		83B30481220E5B4800F95B37 /* MasterViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B30480220E5B4800F95B37 /* MasterViewController2.swift */; };
 		83B30483220E739100F95B37 /* DuplicatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B30482220E739100F95B37 /* DuplicatesViewController.swift */; };
 		83B30487220E9DEE00F95B37 /* AssetGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B30486220E9DEE00F95B37 /* AssetGridView.swift */; };
@@ -67,6 +67,7 @@
 		83D432FF2212B23E005DFD9E /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D432FE2212B23E005DFD9E /* Sizes.swift */; };
 		83D433012213182C005DFD9E /* FeatureTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D433002213182C005DFD9E /* FeatureTableViewCell.swift */; };
 		83DB29832207C5C900B42411 /* Throttler2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83DB29822207C5C900B42411 /* Throttler2.swift */; };
+		83DF52982234C069008797E4 /* PreferencesPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83DF52972234C069008797E4 /* PreferencesPersistence.swift */; };
 		83E60DC122065DFC0057CA78 /* Limiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E60DC022065DFC0057CA78 /* Limiter.swift */; };
 		BD1165F533BB6C36F386DA0E /* Pods_Tidy_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53752B4DB35F72FE5627B7A /* Pods_Tidy_iOS.framework */; };
 /* End PBXBuildFile section */
@@ -139,7 +140,7 @@
 		838B4E1E21E585980025A84F /* PhotoEditingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditingViewController.swift; sourceTree = "<group>"; };
 		838B4E2121E585980025A84F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		838B4E2321E585980025A84F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		83912FF02233B44F004E08A2 /* StoreHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreHelper.swift; sourceTree = "<group>"; };
+		83912FF02233B44F004E08A2 /* StoreUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreUtil.swift; sourceTree = "<group>"; };
 		83B30480220E5B4800F95B37 /* MasterViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewController2.swift; sourceTree = "<group>"; };
 		83B30482220E739100F95B37 /* DuplicatesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuplicatesViewController.swift; sourceTree = "<group>"; };
 		83B30486220E9DEE00F95B37 /* AssetGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetGridView.swift; sourceTree = "<group>"; };
@@ -155,6 +156,7 @@
 		83D432FE2212B23E005DFD9E /* Sizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sizes.swift; sourceTree = "<group>"; };
 		83D433002213182C005DFD9E /* FeatureTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureTableViewCell.swift; sourceTree = "<group>"; };
 		83DB29822207C5C900B42411 /* Throttler2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler2.swift; sourceTree = "<group>"; };
+		83DF52972234C069008797E4 /* PreferencesPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesPersistence.swift; sourceTree = "<group>"; };
 		83E60DC022065DFC0057CA78 /* Limiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Limiter.swift; sourceTree = "<group>"; };
 		9A979488A0EDDCCF5B7F74A1 /* Pods-Tidy iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tidy iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tidy iOS/Pods-Tidy iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		9D50AB0E59F73F5AB02F7B20 /* Pods-Tidy tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tidy tvOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tidy tvOS/Pods-Tidy tvOS.debug.xcconfig"; sourceTree = "<group>"; };
@@ -251,7 +253,8 @@
 				83B3047E220E581D00F95B37 /* UI */,
 				834920A1220C67F7005D0D06 /* VersionedDirectory.swift */,
 				8313327021FAE36B009F6F57 /* VideoEncodeUtil.swift */,
-				83912FF02233B44F004E08A2 /* StoreHelper.swift */,
+				83912FF02233B44F004E08A2 /* StoreUtil.swift */,
+				83DF52972234C069008797E4 /* PreferencesPersistence.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -475,6 +478,7 @@
 				83061648221ACD6100631EA2 /* Extensions.swift in Sources */,
 				83C92AD0222BEA7700897C54 /* PHAssetOriginalQuality.swift in Sources */,
 				831A00FB21F0A83300A12921 /* TemporaryFile.swift in Sources */,
+				83DF52982234C069008797E4 /* PreferencesPersistence.swift in Sources */,
 				832194AE221442120062243C /* RecentlyDeleted.swift in Sources */,
 				8317769F2223E91100545F42 /* AVAssetTranscode.swift in Sources */,
 				831776992223CDB700545F42 /* TranscodeManager.swift in Sources */,
@@ -489,7 +493,7 @@
 				8318DC29222CE4FE00775035 /* Notifications.swift in Sources */,
 				837A99BB2218D91A002B4996 /* About.swift in Sources */,
 				83193AE3220EFEC300A63215 /* InstructionsCell.swift in Sources */,
-				83912FF12233B44F004E08A2 /* StoreHelper.swift in Sources */,
+				83912FF12233B44F004E08A2 /* StoreUtil.swift in Sources */,
 				83D3DE00221BDC8C008E8FEA /* AssetGridViewController.swift in Sources */,
 				83B5FD7422125055008309AB /* StatsTableViewCell.swift in Sources */,
 				830F84AC222FC96B0025B366 /* ProgressHUD.swift in Sources */,

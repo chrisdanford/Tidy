@@ -49,6 +49,15 @@ class TranscodeManager {
                 return "All Done"
             }
         }
+        
+        var showActivityIndiciator: Bool {
+            switch self {
+            case .starting, .scanning:
+                return true
+            case .paused, .done:
+                return false
+            }
+        }
     }
 
     struct State {

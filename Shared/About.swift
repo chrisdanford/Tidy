@@ -17,7 +17,7 @@ class About {
     }
     
     static func info(state: AppState) -> Info {
-        let totalSavingsBytes = state.totalSavingsBytes
+        let totalSavingsBytes = state.preferences.totalSavingsBytes
         let inlineTitle: String
         let alertTitle: String
         if totalSavingsBytes > 0 {
@@ -32,7 +32,7 @@ class About {
             alertTitle = "Thanks for trying Tidy"
         }
         
-        let showLeaveARating = StoreHelper.shouldAskUserForReview(state: state)
+        let showLeaveARating = StoreUtil.shouldAskUserForReview(state: state)
         var message = "Tidy is open-source and 100% free. " + (showLeaveARating ? "Could you please leave us a rating? 💕" : "We hope that you find it useful 💕")
 
         return Info(inlineTitle: inlineTitle, alertTitle: alertTitle, message: message, showLeaveARating: showLeaveARating)

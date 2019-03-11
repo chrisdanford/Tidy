@@ -68,35 +68,35 @@ class AppManager {
     }
 
     func appliedDeletedDuplicates(stats: Savings.Stats) {
-        internalDispatch(AppliedDeleteDuplicates(savingsStats: stats))
+        internalDispatch(AppAction.AppliedDeleteDuplicates(savingsStats: stats))
     }
     
     func appliedTranscode(stats: Savings.Stats) {
-        internalDispatch(AppliedTranscode(savingsStats: stats))
+        internalDispatch(AppAction.AppliedTranscode(savingsStats: stats))
     }
     
     private func fetchTranscode(cancellationToken: CancellationToken) {
-        self.internalDispatch(SetTranscode(transcode: .empty()))
+        self.internalDispatch(AppAction.SetTranscode(transcode: .empty()))
         Transcode.fetch(cancellationToken: cancellationToken) { [weak self] transcode2 in
-            self?.internalDispatch(SetTranscode(transcode: transcode2))
+            self?.internalDispatch(AppAction.SetTranscode(transcode: transcode2))
         }
     }
     private func fetchDuplicates() {
-        self.internalDispatch(SetDuplicates(duplicates: .empty()))
+        self.internalDispatch(AppAction.SetDuplicates(duplicates: .empty()))
         Duplicates.fetch() { [weak self] duplicates2 in
-            self?.internalDispatch(SetDuplicates(duplicates: duplicates2))
+            self?.internalDispatch(AppAction.SetDuplicates(duplicates: duplicates2))
         }
     }
     private func fetchSizes() {
-        self.internalDispatch(SetSizes(sizes: .empty()))
+        self.internalDispatch(AppAction.SetSizes(sizes: .empty()))
         Sizes.fetch() { [weak self] sizes2 in
-            self?.internalDispatch(SetSizes(sizes: sizes2))
+            self?.internalDispatch(AppAction.SetSizes(sizes: sizes2))
         }
     }
     func fetchRecentlyDeleted() {
-        self.internalDispatch(SetRecentlyDeleted(recentlyDeleted: .empty()))
+        self.internalDispatch(AppAction.SetRecentlyDeleted(recentlyDeleted: .empty()))
         RecentlyDeleted.fetch() { [weak self] recentlyDeleted2 in
-            self?.internalDispatch(SetRecentlyDeleted(recentlyDeleted: recentlyDeleted2))
+            self?.internalDispatch(AppAction.SetRecentlyDeleted(recentlyDeleted: recentlyDeleted2))
         }
     }
     private func fetchSavings() {
@@ -104,6 +104,6 @@ class AppManager {
 //            self.internalDispatch(SetSavings(savings: savings))
 //        }
         let totalSavingsBytes = SavingsiCloudPersistence.instance.totalSavingsBytes
-        self.internalDispatch(SetTotalSavingsBytesFromiCloud(totalSavingsBytes: totalSavingsBytes))
+        self.internalDispatch(AppAction.SetTotalSavingsBytes(totalSavingsBytes: totalSavingsBytes))
     }
 }

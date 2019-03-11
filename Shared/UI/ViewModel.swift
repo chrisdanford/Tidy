@@ -20,10 +20,12 @@ class ViewModel {
         var spaceToRecover: String
         //var statusHeading: String
         var status: String
+        var showActivityIndicator: Bool
 
         init(readySpaceToRecover: UInt64, estimatedEventualSpaceToRecover: UInt64, scanningStatus: TranscodeManager.ScanningStatus) {
             self.spaceToRecover = "\(readySpaceToRecover.formattedCompactByteString) of ~\(estimatedEventualSpaceToRecover.formattedCompactByteString)"
             self.status = scanningStatus.friendlyStatus
+            self.showActivityIndicator = scanningStatus.showActivityIndiciator
         }
     }
     enum SectionHeader {
@@ -157,8 +159,7 @@ class ViewModel {
         enum ViewControllerAction {
             case none
             case push(UIViewController)
-            case present(UIViewController)
-            case requestStoreRating
+            case present(UIViewController, Bool)
         }
         
         func selectionAction() -> ViewControllerAction {
@@ -317,7 +318,9 @@ class ViewModel {
                         let cells = modelCells.count > 0 ? modelCells : [ViewModel.Cell.instructions(.init(text: "No Photos or Videos", learnMore: nil, style: .emptyPlaceholder))]
 
                         let instructionsCell = ViewModel.Cell.instructions(.init(text: instructions, learnMore: learnMoreText, style: .instructions))
-                        let sectionHeader = SectionHeader.transcode(.init(readySpaceToRecover: spaceReadyToRecoverBytes(state: state), estimatedEventualSpaceToRecover: state.transcode.briefStatus.readyBytes, scanningStatus: state.transcode.transcodeManagerScanningStatus))
+                        let sectionHeader = SectionHeader.transcode(.init(readySpaceToRecover: spaceReadyToRecoverBytes(state: state),
+                                                                          estimatedEventualSpaceToRecover: state.transcode.briefStatus.readyBytes,
+                                                                          scanningStatus: state.transcode.transcodeManagerScanningStatus))
                         return [
                             ViewModel.GridSection(sectionHeader: nil, cells: [instructionsCell]),
                             ViewModel.GridSection(sectionHeader: sectionHeader, cells: cells),
@@ -383,29 +386,25 @@ class ViewModel {
                 }
                 alertController.addAction(action1)
                 alertController.addAction(action2)
-                return .present(alertController)
+                return .present(alertController, false)
             case .savings:
                 let aboutInfo = About.info(state: mainStore.state)
-                if aboutInfo.showLeaveARating {
-                    return .requestStoreRating
-                } else {
-                    let alertController = UIAlertController(title: aboutInfo.alertTitle, message: aboutInfo.message, preferredStyle: .alert)
-                    let action1 = UIAlertAction(title: "Leave a Rating", style: .default) { (action:UIAlertAction) in
-                        let appId = "id1147613120"
-                        let url = URL(string: "itms-apps://itunes.apple.com/app/" + appId)!
-                        //SKStoreReviewController.requestReview()
-                        UIApplication.shared.open(url)
-                    }
-                    let action2 = UIAlertAction(title: "PhotoTidy Open-Source", style: .default) { (action:UIAlertAction) in
-                        let url = URL(string: "https://github.com/chrisdanford")!
-                        UIApplication.shared.open(url)
-                    }
-                    let action3 = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction) in }
-                    alertController.addAction(action1)
-                    alertController.addAction(action2)
-                    alertController.addAction(action3)
-                    return .present(alertController)
+                let alertController = UIAlertController(title: aboutInfo.alertTitle, message: aboutInfo.message, preferredStyle: .alert)
+                let action1 = UIAlertAction(title: "Leave a Rating", style: .default) { (action:UIAlertAction) in
+                    let appId = "id1147613120"
+                    let url = URL(string: "itms-apps://itunes.apple.com/app/" + appId)!
+                    //SKStoreReviewController.requestReview()
+                    UIApplication.shared.open(url)
                 }
+                let action2 = UIAlertAction(title: "PhotoTidy Open-Source", style: .default) { (action:UIAlertAction) in
+                    let url = URL(string: "https://github.com/chrisdanford")!
+                    UIApplication.shared.open(url)
+                }
+                let action3 = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction) in }
+                alertController.addAction(action1)
+                alertController.addAction(action2)
+                alertController.addAction(action3)
+                return .present(alertController, aboutInfo.showLeaveARating)
             default:
                 return .none
             }

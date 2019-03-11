@@ -1,5 +1,5 @@
 //
-//  StoreHelper.swift
+//  StoreUtil.swift
 //  Tidy iOS
 //
 //  Created by Chris Danford on 3/9/19.
@@ -8,7 +8,7 @@
 
 import StoreKit
 
-class StoreHelper {
+class StoreUtil {
     private static var currentVersion: String? {
         guard let currentVersion = Bundle.main.object(forInfoDictionaryKey: kCFBundleVersionKey as String) as? String else {
             return nil
@@ -20,11 +20,11 @@ class StoreHelper {
 
     static func shouldAskUserForReview(state: AppState) -> Bool {
         let minSavingsBytes: UInt64 = 2 * 1024 * 1024 * 1024
-        if state.totalSavingsBytes < minSavingsBytes {
+        if state.preferences.totalSavingsBytes < minSavingsBytes {
             return false
         }
         
-        guard let version = StoreHelper.currentVersion else {
+        guard let version = StoreUtil.currentVersion else {
             return false
         }
         
@@ -37,7 +37,9 @@ class StoreHelper {
     }
     
     static func requestReview() {
-        SKStoreReviewController.requestReview()
-        UserDefaults.standard.set(currentVersion, forKey: key)
+        if let currentVer = currentVersion {
+            SKStoreReviewController.requestReview()
+            dispatch(AppAction.SetLastReviewRequestedAppVersion(lastReviewRequestedAppVersion: currentVer))
+        }
     }
 }

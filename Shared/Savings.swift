@@ -94,6 +94,6 @@ class SavingsiCloudPersistence {
 //                print("ChangedKeys = \(changedKeys)")
 //            }
 //        }
-        dispatch(SetTotalSavingsBytesFromiCloud(totalSavingsBytes: totalSavingsBytes))
+        dispatch(AppAction.SetTotalSavingsBytes(totalSavingsBytes: totalSavingsBytes))
     }
 }

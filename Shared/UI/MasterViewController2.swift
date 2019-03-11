@@ -185,18 +185,13 @@ class MasterViewController2: UITableViewController, StoreSubscriber {
             break
         case .push(let viewController):
             self.splitViewController?.showDetailViewController(viewController, sender: nil)
-//            if self.splitViewController!.isCollapsed {
-//                self.navigationController?.pushViewController(viewController, animated: true)
-//            } else {
-//                let navigationController = self.splitViewController?.viewControllers[1] as! UINavigationController
-//                navigationController.setViewControllers([viewController], animated: false)
-//            }
-        case .present(let viewController):
+        case .present(let viewController, let requestStoreReview):
             self.present(viewController, animated: true) { [weak self] in
                 self?.clearTableViewSelection()
             }
-        case .requestStoreRating:
-            StoreHelper.requestReview()
+            if requestStoreReview {
+                StoreUtil.requestReview()
+            }
         }
     }
     
