@@ -13,6 +13,7 @@ struct AppState: StateType {
     var sizes: Sizes.State
     var duplicates: Duplicates.State
     var transcode: Transcode.State
+    var largeFiles: LargeFiles.State
     var recentlyDeleted: RecentlyDeleted.State
     var preferences: Preferences.State
 
@@ -24,6 +25,7 @@ struct AppState: StateType {
         return AppState(sizes: .empty(),
                         duplicates: .empty(),
                         transcode: .empty(),
+                        largeFiles: .empty(),
                         recentlyDeleted: .empty(),
                         preferences: .empty())
     }
@@ -41,6 +43,10 @@ struct AppAction {
 
     struct SetSizes: Action {
         let sizes: Sizes.State
+    }
+
+    struct SetLargeFiles: Action {
+        let largeFiles: LargeFiles.State
     }
 
     struct SetRecentlyDeleted: Action {
@@ -70,6 +76,10 @@ struct AppAction {
     struct AppliedDeleteDuplicates: Action {
         let savingsStats: Savings.Stats
     }
+
+    struct DeletedAsset: Action {
+        let savingsStats: Savings.Stats
+    }
 }
 
 // MARK:- REDUCERS
@@ -83,28 +93,22 @@ func appReducer(action: Action, state: AppState?) -> AppState {
         newState.duplicates = action2.duplicates
     case let action2 as AppAction.SetSizes:
         newState.sizes = action2.sizes
+    case let action2 as AppAction.SetLargeFiles:
+        newState.largeFiles = action2.largeFiles
     case let action2 as AppAction.SetRecentlyDeleted:
         newState.recentlyDeleted = action2.recentlyDeleted
-//    case let action as SetSavings:
-//        newState.savings = action.savings
     case let action as AppAction.SetTotalSavingsBytes:
         newState.preferences.totalSavingsBytes = action.totalSavingsBytes
         Preferences.Persistence.instance.save(state: newState.preferences)
     case let action as AppAction.AppliedTranscode:
-//        newState.savings.transcode = newState.savings.transcode + action.savingsStats
-//        SavingsFilePersistence.write(savings: newState.savings)
-
         newState.preferences.totalSavingsBytes += action.savingsStats.savingsBytes
         Preferences.Persistence.instance.save(state: newState.preferences)
-//        SavingsiCloudPersistence.instance.set(totalSavingsBytes: newState.totalSavingsBytes)
     case let action as AppAction.AppliedDeleteDuplicates:
-//        newState.savings.duplicates = newState.savings.duplicates + action.savingsStats
-//        SavingsFilePersistence.write(savings: newState.savings)
-
         newState.preferences.totalSavingsBytes += action.savingsStats.savingsBytes
         Preferences.Persistence.instance.save(state: newState.preferences)
-//        SavingsiCloudPersistence.instance.set(totalSavingsBytes: newState.totalSavingsBytes)
-
+    case let action as AppAction.DeletedAsset:
+        newState.preferences.totalSavingsBytes += action.savingsStats.savingsBytes
+        Preferences.Persistence.instance.save(state: newState.preferences)
     default:
         fatalError()
     }

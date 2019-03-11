@@ -68,6 +68,7 @@
 		83D433012213182C005DFD9E /* FeatureTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D433002213182C005DFD9E /* FeatureTableViewCell.swift */; };
 		83DB29832207C5C900B42411 /* Throttler2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83DB29822207C5C900B42411 /* Throttler2.swift */; };
 		83DF52982234C069008797E4 /* PreferencesPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83DF52972234C069008797E4 /* PreferencesPersistence.swift */; };
+		83DF529A2236207B008797E4 /* LargeFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83DF52992236207B008797E4 /* LargeFiles.swift */; };
 		83E60DC122065DFC0057CA78 /* Limiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E60DC022065DFC0057CA78 /* Limiter.swift */; };
 		BD1165F533BB6C36F386DA0E /* Pods_Tidy_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53752B4DB35F72FE5627B7A /* Pods_Tidy_iOS.framework */; };
 /* End PBXBuildFile section */
@@ -157,6 +158,7 @@
 		83D433002213182C005DFD9E /* FeatureTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureTableViewCell.swift; sourceTree = "<group>"; };
 		83DB29822207C5C900B42411 /* Throttler2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler2.swift; sourceTree = "<group>"; };
 		83DF52972234C069008797E4 /* PreferencesPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesPersistence.swift; sourceTree = "<group>"; };
+		83DF52992236207B008797E4 /* LargeFiles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeFiles.swift; sourceTree = "<group>"; };
 		83E60DC022065DFC0057CA78 /* Limiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Limiter.swift; sourceTree = "<group>"; };
 		9A979488A0EDDCCF5B7F74A1 /* Pods-Tidy iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tidy iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tidy iOS/Pods-Tidy iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		9D50AB0E59F73F5AB02F7B20 /* Pods-Tidy tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tidy tvOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tidy tvOS/Pods-Tidy tvOS.debug.xcconfig"; sourceTree = "<group>"; };
@@ -255,6 +257,7 @@
 				8313327021FAE36B009F6F57 /* VideoEncodeUtil.swift */,
 				83912FF02233B44F004E08A2 /* StoreUtil.swift */,
 				83DF52972234C069008797E4 /* PreferencesPersistence.swift */,
+				83DF52992236207B008797E4 /* LargeFiles.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -484,6 +487,7 @@
 				831776992223CDB700545F42 /* TranscodeManager.swift in Sources */,
 				837A99B32216C23D002B4996 /* State.swift in Sources */,
 				83061650221BAC3C00631EA2 /* PHAssetVideoCodec.swift in Sources */,
+				83DF529A2236207B008797E4 /* LargeFiles.swift in Sources */,
 				830F84AE223101C50025B366 /* UIViewControllerAlert.swift in Sources */,
 				83B30481220E5B4800F95B37 /* MasterViewController2.swift in Sources */,
 				83B30487220E9DEE00F95B37 /* AssetGridView.swift in Sources */,

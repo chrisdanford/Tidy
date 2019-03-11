@@ -95,7 +95,7 @@ class Duplicates {
         }
         
         var briefStatus: BriefStatus {
-            return BriefStatus(isScanning: isFetching, readyBytes: bytesToDelete)
+            return BriefStatus(isScanning: isFetching, badge: .bytes(bytesToDelete))
         }
     }
     

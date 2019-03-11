@@ -11,10 +11,26 @@ import ReSwift
 
 struct BriefStatus {
     var isScanning: Bool
-    var readyBytes: UInt64
+    enum Badge {
+        case none
+        case bytes(UInt64)
+        case count(Int)
+        
+        var message: String? {
+            switch self {
+            case .none:
+                return nil
+            case .bytes(let bytes):
+                return (bytes == 0) ? nil : bytes.formattedCompactByteString
+            case .count(let count):
+                return (count == 0) ? nil : count.formattedDecimalString
+            }
+        }
+    }
+    var badge: Badge
     
     static func empty() -> BriefStatus {
-        return BriefStatus(isScanning: true, readyBytes: 0)
+        return BriefStatus(isScanning: true, badge: .none)
     }
 }
 
@@ -60,6 +76,7 @@ class AppManager {
         fetchDuplicates()
         NSLog("clearAndFetchAll 4")
         fetchSizes()
+        fetchLargeFiles()
         NSLog("clearAndFetchAll 5")
         fetchRecentlyDeleted()
         NSLog("clearAndFetchAll 6")
@@ -75,6 +92,10 @@ class AppManager {
         internalDispatch(AppAction.AppliedTranscode(savingsStats: stats))
     }
     
+    func deletedAsset(stats: Savings.Stats) {
+        internalDispatch(AppAction.DeletedAsset(savingsStats: stats))
+    }
+
     private func fetchTranscode(cancellationToken: CancellationToken) {
         self.internalDispatch(AppAction.SetTranscode(transcode: .empty()))
         Transcode.fetch(cancellationToken: cancellationToken) { [weak self] transcode2 in
@@ -91,6 +112,12 @@ class AppManager {
         self.internalDispatch(AppAction.SetSizes(sizes: .empty()))
         Sizes.fetch() { [weak self] sizes2 in
             self?.internalDispatch(AppAction.SetSizes(sizes: sizes2))
+        }
+    }
+    private func fetchLargeFiles() {
+        self.internalDispatch(AppAction.SetLargeFiles(largeFiles: .empty()))
+        LargeFiles.fetch { [weak self] largeFiles in
+            self?.internalDispatch(AppAction.SetLargeFiles(largeFiles: largeFiles))
         }
     }
     func fetchRecentlyDeleted() {

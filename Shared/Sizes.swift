@@ -49,16 +49,12 @@ class Sizes {
             progress(copy!)
         }
         
-        // Photos are much more uniform in size than video because video is variable length.
-        // Static numbers chosen so that the amount of time to scan is bounded not proportional to library size
-        let photosSampleSize = 750
-        let videoSampleSize = 2500
 
         // There appears to be a global lock on slow_resourceStats that's causing a maximum throughput of 1ms/call
         // acrross all threads on my device.  So, there's no benefit to making this multithreaded.
 
         DispatchQueue.global().async {
-            predictSize(mediaType: .image, preferredSampleSize: photosSampleSize, progress: { (stats) in
+            predictSize(mediaType: .image, progress: { (stats) in
                 queue.sync {
                     state.photos = stats
                 }
@@ -66,7 +62,7 @@ class Sizes {
             })
         }
         DispatchQueue.global().async {
-            predictSize(mediaType: .video, preferredSampleSize: videoSampleSize, progress: { (stats) in
+            predictSize(mediaType: .video, progress: { (stats) in
                 queue.sync {
                     state.videos = stats
                 }
@@ -75,7 +71,7 @@ class Sizes {
         }
     }
     
-    class func predictSize(mediaType: PHAssetMediaType, preferredSampleSize: Int, progress: (State.CategoryStats) -> ()) {
+    class func predictSize(mediaType: PHAssetMediaType, progress: (State.CategoryStats) -> ()) {
         let assets = FetchAssets.manager.fetch(with: mediaType)
         let assetsSample = FetchAssets.manager.fetchSamples(with: mediaType)
         let totalCount = assets.count

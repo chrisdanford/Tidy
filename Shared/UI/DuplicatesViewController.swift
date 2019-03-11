@@ -90,16 +90,10 @@ class DuplicatesViewController: UIViewController, StoreSubscriber {
         // Update once but don't subscribe.  We don't want to be updating while the transition is in progress.
         newState(state: mainStore.state)
         
-        updateToolbarItems()
-        
-        
 //        let blue = UIColor(red: 34.0/255, green: 103.0/255, blue: 255.0/255, alpha: 1)
 //        self.navigationController?.toolbar.barTintColor = blue
     }
     
-    func updateToolbarItems() {
-        navigationController?.isToolbarHidden = false
-    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -148,63 +142,40 @@ class DuplicatesViewController: UIViewController, StoreSubscriber {
             }
         }
         
-//        applyButton.setTitle(gridDataSource.buttonLabelText(state), for: .normal)
-//        applyButton.setTitleColor(UIColor.white, for: .normal)
-        
-//        spaceToRecoverLabel.text = gridDataSource.spaceToRecoverBytes(state).formattedCompactByteString
-        
-        if applyBarButtonItem.customView == nil {
-            applyBarButtonItem.customView = makeButton()
-        }
-        let buttonView = applyBarButtonItem.customView as! UIButton
-        
-        var attributedTexts = [
-            NSAttributedString(string: gridDataSource.buttonLabelText(state) + "\n", color: UIColor.white, font: UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)),
+        let primaryButton = gridDataSource.primaryButton(state)
+        navigationController?.isToolbarHidden = (primaryButton == nil)
+        if let button = primaryButton {
+            if applyBarButtonItem.customView == nil {
+                applyBarButtonItem.customView = makeButton()
+            }
+            let buttonView = applyBarButtonItem.customView as! UIButton
+            
+            var attributedTexts = [
+                NSAttributedString(string: button.labelText + "\n", color: UIColor.white, font: UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)),
             ]
-        if let batchSize = gridDataSource.batchSizeToUse(state) {
             let moreAttributedTexts = [
-                NSAttributedString(string: " In batches of: ", color: UIColor.init(white: 1, alpha: 0.6), font: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.caption1)),
-                NSAttributedString(string: batchSize.formattedDecimalString, color: UIColor.init(white: 1, alpha: 1), font: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.caption2)),
-            ]
+                NSAttributedString(string: " Space to recover: ", color: UIColor.init(white: 1, alpha: 0.6), font: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.caption1)),
+                NSAttributedString(string: button.spaceToRecoverBytes.formattedCompactByteString, color: UIColor.init(white: 1, alpha: 1), font: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.caption2)),
+                ]
             attributedTexts.append(contentsOf: moreAttributedTexts)
+            
+            buttonView.setAttributedTitle(NSAttributedString.join(attributedTexts), for: .normal)
+            buttonView.isEnabled = button.isEnabled
+            
+            if buttonView.isEnabled {
+                let color = UIColor(red: 34.0/255, green: 103.0/255, blue: 255.0/255, alpha: 1)
+                buttonView.backgroundColor = color
+            } else {
+                let color = UIColor(white: 0.5, alpha: 1)
+                buttonView.backgroundColor = color
+            }
+            
+            buttonView.sizeToFit()
+            applyBarButtonItem.customView = buttonView
+            navigationController?.isToolbarHidden = false
+            self.toolbarItems = [applyBarButtonItem,]
         }
-
-        let moreAttributedTexts = [
-            NSAttributedString(string: " Space to recover: ", color: UIColor.init(white: 1, alpha: 0.6), font: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.caption1)),
-            NSAttributedString(string: gridDataSource.spaceToRecoverBytes(state).formattedCompactByteString, color: UIColor.init(white: 1, alpha: 1), font: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.caption2)),
-        ]
-        attributedTexts.append(contentsOf: moreAttributedTexts)
-
-        buttonView.setAttributedTitle(NSAttributedString.join(attributedTexts), for: .normal)
-        buttonView.isEnabled = gridDataSource.buttonIsEnabled(state)
-        
-        if buttonView.isEnabled {
-            let color = UIColor(red: 34.0/255, green: 103.0/255, blue: 255.0/255, alpha: 1)
-            buttonView.backgroundColor = color
-        } else {
-            let color = UIColor(white: 0.5, alpha: 1)
-            buttonView.backgroundColor = color
-        }
-
-        buttonView.sizeToFit()
-        applyBarButtonItem.customView = buttonView
-
-        
-        
-//        spaceToRecoverBarButtonItem.customView = makeSpaceToRecoverView(text: gridDataSource.statusText(state))
-
-        
-        
-        //let barButttonItem = UIBarButtonItem(customView: makeButton())
-        //let barLabeltem = UIBarButtonItem(customView: makeSpaceToRecoverView())
-        
-//        applyBarButtonItem.tintColor = UIColor.white
-//        let bgImage = UIImage(color: UIColor.blue)
-//        applyBarButtonItem!.setBackgroundImage(bgImage, for: UIControl.State.normal, barMetrics: UIBarMetrics.default)
-//        applyBarButtonItem.set
-        self.toolbarItems = [/*spacer,*/ applyBarButtonItem, /*spacer2*/]
-        
-        
+                
         // Update all visible headers.
         // TODO: Is there a better way to diff and update the headers?
         let visibleHeaderIndexPaths = collectionView.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionView.elementKindSectionHeader)
@@ -303,37 +274,39 @@ class DuplicatesViewController: UIViewController, StoreSubscriber {
     @IBAction func actionRemoveDuplicates(_ sender: Any) {
         let progressController = self.showProgressHUD(message: self.gridDataSource.applyActionProgressMessage)
         let state = self.state
-        
+
         // Apply the action off of Main.  It may take a while to return, and we want the progress message
         // to show immediately.
         DispatchQueue.global().async {
-            self.gridDataSource.applyAction(state, { [weak self] progressOrResult in
-                switch progressOrResult {
-                case .progress(let message):
-                    progressController.set(message: message)
-                case .result(let result):
-                    var ending: UIViewController.ProgressController.Ending
-                    switch result {
-                    case .success:
-                        ending = .success
-                        DispatchQueue.main.async {
-                            self?.navigationController?.popViewController(animated: true)
-                            AppManager.resetAndFetch()
+            if let button = self.gridDataSource.primaryButton(state) {
+                button.applyAction(state, { [weak self] progressOrResult in
+                    switch progressOrResult {
+                    case .progress(let message):
+                        progressController.set(message: message)
+                    case .result(let result):
+                        var ending: UIViewController.ProgressController.Ending
+                        switch result {
+                        case .success:
+                            ending = .success
+                            DispatchQueue.main.async {
+                                self?.navigationController?.popViewController(animated: true)
+                                AppManager.resetAndFetch()
+                            }
+                        case .cancelledOrError:
+                            ending = .errorOrCancelled
+                            DispatchQueue.main.async {
+                                // PHPhotoLibrary.performChanges doesn't not give a way to differentiate between "error" and "cancelled", and the errors
+                                // that it returns are always worthless "domain=NSCocoaErrorDomain, code=-1" errors.  It's inactionable, so don't show the error.
+                                
+                                //self?.showSimpleOKAlert(title: "Failed to apply changes", message: error.friendlyLocalizedDescription)
+                                
+                                AppManager.resetAndFetch()
+                            }
                         }
-                    case .cancelledOrError:
-                        ending = .errorOrCancelled
-                        DispatchQueue.main.async {
-                            // PHPhotoLibrary.performChanges doesn't not give a way to differentiate between "error" and "cancelled", and the errors
-                            // that it returns are always worthless "domain=NSCocoaErrorDomain, code=-1" errors.  It's inactionable, so don't show the error.
-                            
-                            //self?.showSimpleOKAlert(title: "Failed to apply changes", message: error.friendlyLocalizedDescription)
-                            
-                            AppManager.resetAndFetch()
-                        }
+                        progressController.end(ending: ending)
                     }
-                    progressController.end(ending: ending)
-                }
-            })
+                })
+            }
         }
     }
 

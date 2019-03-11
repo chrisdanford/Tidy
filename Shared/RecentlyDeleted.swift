@@ -33,7 +33,7 @@ class RecentlyDeleted {
             let bytes = assets.reduce(0) { (result, asset) -> UInt64 in
                 return result + asset.slow_resourceStats.totalResourcesSizeBytes
             }
-            let briefStatus = BriefStatus(isScanning: false, readyBytes: bytes)
+            let briefStatus = BriefStatus(isScanning: false, badge: .bytes(bytes))
             let state = State(assets: assets, briefStatus: briefStatus)
             progress(state)
         }

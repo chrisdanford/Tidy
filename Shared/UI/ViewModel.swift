@@ -22,8 +22,8 @@ class ViewModel {
         var status: String
         var showActivityIndicator: Bool
 
-        init(readySpaceToRecover: UInt64, estimatedEventualSpaceToRecover: UInt64, scanningStatus: TranscodeManager.ScanningStatus) {
-            self.spaceToRecover = "\(readySpaceToRecover.formattedCompactByteString) of ~\(estimatedEventualSpaceToRecover.formattedCompactByteString)"
+        init(readySpaceToRecover: UInt64, estimatedEventualSavingsBytes: UInt64, scanningStatus: TranscodeManager.ScanningStatus) {
+            self.spaceToRecover = "\(readySpaceToRecover.formattedCompactByteString) of ~\(estimatedEventualSavingsBytes.formattedCompactByteString)"
             self.status = scanningStatus.friendlyStatus
             self.showActivityIndicator = scanningStatus.showActivityIndiciator
         }
@@ -78,6 +78,7 @@ class ViewModel {
         case inexactPhotos
         case inexactVideos
         case upgradeCompression
+        case largeFiles
         case clearRecentlyDeleted
         case savings
         
@@ -103,6 +104,9 @@ class ViewModel {
             case .upgradeCompression:
                 let specialCell = cell as! FeatureTableViewCell
                 updateFeatureCell(cell: specialCell, briefStatus: state.transcode.briefStatus)
+            case .largeFiles:
+                let specialCell = cell as! FeatureTableViewCell
+                updateFeatureCell(cell: specialCell, briefStatus: state.largeFiles.briefStatus)
             case .clearRecentlyDeleted:
                 let specialCell = cell as! FeatureTableViewCell
                 updateFeatureCell(cell: specialCell, briefStatus: state.recentlyDeleted.briefStatus)
@@ -118,14 +122,14 @@ class ViewModel {
         }
         
         func updateCellAccessory(cell: UITableViewCell, briefStatus: BriefStatus) {
-            if briefStatus.isScanning || briefStatus.readyBytes > 0 {
+            let badgeMessage = briefStatus.badge.message
+            if briefStatus.isScanning || badgeMessage != nil {
                 // Re-use the existing ActivityAndBadge, if any.
                 let activityAndBadge = (cell.accessoryView as? ActivityAndBadge) ?? ActivityAndBadge()
                 
                 cell.accessoryView = nil
                 
                 activityAndBadge.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-                let badgeMessage = briefStatus.readyBytes > 0 ? briefStatus.readyBytes.formattedCompactByteString : nil
                 activityAndBadge.set(showActivity: briefStatus.isScanning, badgeMessage: badgeMessage)
                 
                 // Show label in accessory view and remove disclosure
@@ -146,13 +150,13 @@ class ViewModel {
         var height: CGFloat {
             switch self {
             case .sizes:
-                return 186
+                return 180
             case .header:
                 return 25
             case .savings:
                 return 100
             default:
-                return 50
+                return 40
             }
         }
         
@@ -189,7 +193,7 @@ class ViewModel {
                 case .inexactPhotos:
                     title = "Resized Photos"
                 case .inexactVideos:
-                    title = "Resized Videos"
+                    title = "Resized Copies"
                 default:
                     fatalError()
                 }
@@ -249,43 +253,29 @@ class ViewModel {
                             ViewModel.GridSection(sectionHeader: sectionHeader, cells: cells),
                         ]
                     },
-                    buttonIsEnabled: { state in
-                        let duplicateGroups = duplicateGroupsFor(state: state)
-                        return duplicateGroups.groups.count > 0
-                    },
-                    buttonLabelText: { state in
+                    applyActionProgressMessage: "Deleting",
+                    primaryButton: { state in
                         let duplicateGroups = duplicateGroupsFor(state: state)
                         let formattedCount = duplicateGroups.numAssetsToDelete.formattedDecimalString
-                        return "Apply \(formattedCount) Deletes"
-                    },
-                    batchSizeToUse: { state in
-                        return nil
-                    },
-//                    statusText: { state in
-//                        return "foo"
-//                    },
-                    spaceToRecoverBytes: { state in
-                        let duplicateGroups = duplicateGroupsFor(state: state)
-                        return duplicateGroups.bytesToDelete
-                    },
-                    applyActionProgressMessage: "Deleting",
-                    applyAction: { state, callback in
-                        let duplicateGroups = duplicateGroupsFor(state: state)
-
-                        // debugging
-                        //let modifiedDuplicateGroups = Duplicates.Groups(isFetching: false, groups: Array(duplicateGroups.groups.prefix(1)))
-                        let modifiedDuplicateGroups = duplicateGroups
-                        
-                        let diff = DuplicatesDiff.createDiff(duplicateGroups: modifiedDuplicateGroups)
-                        DuplicatesDiff.applyDiff(diff: diff) { result in
-                            switch result {
-                            case .success(let stats):
-                                AppManager.instance.appliedDeletedDuplicates(stats: stats)
-                                callback(.result(.success))
-                            case .cancelledOrError(let error):
-                                callback(.result(.cancelledOrError(error)))
+                        let buttonState = GridDataSource.Button(isEnabled: duplicateGroups.groups.count > 0, labelText: "Apply \(formattedCount) Deletes", spaceToRecoverBytes: duplicateGroups.bytesToDelete, applyAction: { state, callback in
+                            let duplicateGroups = duplicateGroupsFor(state: state)
+                            
+                            // debugging
+                            //let modifiedDuplicateGroups = Duplicates.Groups(isFetching: false, groups: Array(duplicateGroups.groups.prefix(1)))
+                            let modifiedDuplicateGroups = duplicateGroups
+                            
+                            let diff = DuplicatesDiff.createDiff(duplicateGroups: modifiedDuplicateGroups)
+                            DuplicatesDiff.applyDiff(diff: diff) { result in
+                                switch result {
+                                case .success(let stats):
+                                    AppManager.instance.appliedDeletedDuplicates(stats: stats)
+                                    callback(.result(.success))
+                                case .cancelledOrError(let error):
+                                    callback(.result(.cancelledOrError(error)))
+                                }
                             }
-                        }
+                        })
+                        return buttonState
                     }
                 )
                 vc.set(gridDataSource: gridDataSource)
@@ -319,59 +309,68 @@ class ViewModel {
 
                         let instructionsCell = ViewModel.Cell.instructions(.init(text: instructions, learnMore: learnMoreText, style: .instructions))
                         let sectionHeader = SectionHeader.transcode(.init(readySpaceToRecover: spaceReadyToRecoverBytes(state: state),
-                                                                          estimatedEventualSpaceToRecover: state.transcode.briefStatus.readyBytes,
+                                                                          estimatedEventualSavingsBytes: state.transcode.estimatedEventualSavingsBytes,
                                                                           scanningStatus: state.transcode.transcodeManagerScanningStatus))
                         return [
                             ViewModel.GridSection(sectionHeader: nil, cells: [instructionsCell]),
                             ViewModel.GridSection(sectionHeader: sectionHeader, cells: cells),
                         ]
                     },
-                    buttonIsEnabled: { state in
+                    applyActionProgressMessage: "Replacing",
+                    primaryButton: {state in
                         let assets = state.transcode.transcodingToApply
-                        return assets.count > 0
-                    },
-                    buttonLabelText: { state in
-                        let assets = state.transcode.transcodingToApply
-                        let text = "Replace \(assets.count.formattedDecimalString) with Upgrades"
-                        return text
-                    },
-                    batchSizeToUse: { state in
-//                        let assets = state.transcode.transcodingToApply
-                        return nil
-                    },
-//                    statusText: { state in
-//                        let text = state.transcode.transcodeManagerScanningStatus.friendlyString
-//                        let savings = state.transcode.briefStatus.readyBytes.formattedCompactByteString
-//                        return "\(text)\nEst. Savings: \(savings)"
-//                    },
-                    spaceToRecoverBytes: { state in
-                        return spaceReadyToRecoverBytes(state: state)
+                        let spaceToRecoverBytes = 0
+                        var buttonState = GridDataSource.Button(isEnabled: (assets.count > 0), labelText: "Replace \(assets.count.formattedDecimalString) with Upgrades", spaceToRecoverBytes: spaceReadyToRecoverBytes(state: state), applyAction: {state, callback in
+                            let assetsToReplace = state.transcode.transcodingToApply
+                            
+                            PHAssetReplace.replaceWithTranscoded(assets: assetsToReplace, callback: { progressOrResult in
+                                switch progressOrResult {
+                                case .progress(let progress):
+                                    switch progress {
+                                    case .appliedSavings(let savingsStats):
+                                        AppManager.instance.appliedTranscode(stats: savingsStats)
+                                    case .preparingBatchOfSize(let batchSize):
+                                        callback(.progress("Replacing \(batchSize.formattedDecimalString)"))
+                                    }
+                                case .result(let result):
+                                    switch result {
+                                    case .success:
+                                        callback(.result(.success))
+                                    case .cancelledOrError(let error):
+                                        callback(.result(.cancelledOrError(error)))
+                                    }
+                                }
+                            })
+                        })
+                        return buttonState
+                    }
+                )
+                vc.set(gridDataSource: gridDataSource)
+                return .push(vc)
+            case .largeFiles:
+                let instructions = "Review large files and delete any that are no longer needed."
+
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let vc = storyboard.instantiateViewController(withIdentifier: "duplicatesViewController") as! DuplicatesViewController
+                let gridDataSource = GridDataSource(
+                    title: "Large Files",
+                    forceEvenColumnCount: false,
+                    viewModels: { state in
+                        let assets = state.largeFiles.sortedAssets.map({ asset in
+                            return AssetGridView.Model(assetModel: .init(asset: asset), showDeleteIcon: false, showVerboseSizeBytes: false, showModifiedDate: false, showSavingsPercentage: true, operationProgress: nil)
+                        })
+                        
+                        let modelCells = assets.map({ ViewModel.Cell.asset($0) })
+                        let cells = modelCells.count > 0 ? modelCells : [ViewModel.Cell.instructions(.init(text: "No Photos or Videos", learnMore: nil, style: .emptyPlaceholder))]
+                        
+                        let instructionsCell = ViewModel.Cell.instructions(.init(text: instructions, learnMore: nil, style: .instructions))
+                        return [
+                            ViewModel.GridSection(sectionHeader: nil, cells: [instructionsCell]),
+                            ViewModel.GridSection(sectionHeader: nil, cells: cells),
+                        ]
                     },
                     applyActionProgressMessage: "Replacing",
-                    applyAction: {state, callback in
-                        //debugging
-                        //let assetsToReplace = Array(state.transcode.transcodingToApply.prefix(100))
-                        let assetsToReplace = state.transcode.transcodingToApply
-
-                        PHAssetReplace.replaceWithTranscoded(assets: assetsToReplace, callback: { progressOrResult in
-                            switch progressOrResult {
-                            case .progress(let progress):
-                                switch progress {
-                                case .appliedSavings(let savingsStats):
-                                    AppManager.instance.appliedTranscode(stats: savingsStats)
-                                case .preparingBatchOfSize(let batchSize):
-                                    callback(.progress("Replacing \(batchSize.formattedDecimalString)"))
-                                }
-                            case .result(let result):
-                                switch result {
-                                case .success:
-                                    callback(.result(.success))
-                                case .cancelledOrError(let error):
-                                    callback(.result(.cancelledOrError(error)))
-                                }
-                            }
-                        })
-                    }
+                    primaryButton: { state in nil }
                 )
                 vc.set(gridDataSource: gridDataSource)
                 return .push(vc)
@@ -405,7 +404,7 @@ class ViewModel {
                 alertController.addAction(action2)
                 alertController.addAction(action3)
                 return .present(alertController, aboutInfo.showLeaveARating)
-            default:
+            case .header, .sizes:
                 return .none
             }
         }
@@ -422,7 +421,7 @@ class ViewModel {
                 statusCell.set(photosSizes: state.sizes)
             case .header:
                 cell.textLabel!.text = NSLocalizedString("Clear Some Space", comment: "")
-            case .exactPhotos, .exactVideos, .inexactPhotos, .inexactVideos, .upgradeCompression, .clearRecentlyDeleted:
+            case .exactPhotos, .exactVideos, .inexactPhotos, .inexactVideos, .upgradeCompression, .clearRecentlyDeleted, .largeFiles:
                 let title: String
                 let image: UIImage
                 let briefStatus: BriefStatus
@@ -440,13 +439,17 @@ class ViewModel {
                     image = UIImage(named: "lowQuality")!
                     briefStatus = state.duplicates.photosInexact.briefStatus
                 case .inexactVideos:
-                    title = NSLocalizedString("Resized Videos", comment: "")
+                    title = NSLocalizedString("Resized Copies", comment: "")
                     image = UIImage(named: "lowQuality")!
                     briefStatus = state.duplicates.videosInexact.briefStatus
                 case .upgradeCompression:
                     title = NSLocalizedString("Upgrade Compression", comment: "")
                     image = UIImage(named: "compress")!
                     briefStatus = state.transcode.briefStatus
+                case .largeFiles:
+                    title = NSLocalizedString("Large Files", comment: "")
+                    image = UIImage(named: "largeFile")!
+                    briefStatus = BriefStatus.empty()
                 case .clearRecentlyDeleted:
                     title = NSLocalizedString("Clear Recently Deleted", comment: "")
                     image = UIImage(named: "trash")!
@@ -480,12 +483,16 @@ struct GridDataSource {
     var title: String
     var forceEvenColumnCount: Bool
     var viewModels: (AppState) -> [ViewModel.GridSection]
-    var buttonIsEnabled: (AppState) -> Bool
-    var buttonLabelText: (AppState) -> String
-    var batchSizeToUse: (AppState) -> Int?
-//    var statusText: (AppState) -> String
-    var spaceToRecoverBytes: (AppState) -> UInt64
     var applyActionProgressMessage: String
+
+    struct Button {
+        var isEnabled: Bool
+        var labelText: String
+        var spaceToRecoverBytes: UInt64
+        var applyAction: (AppState, @escaping (ProgressOrResult) -> ()) -> ()
+    }
+    
+    var primaryButton: (AppState) -> Button?
     
     enum Result {
         case success
@@ -495,18 +502,20 @@ struct GridDataSource {
         case progress(String)
         case result(Result)
     }
-    var applyAction: (AppState, @escaping (ProgressOrResult) -> ()) -> ()
 
     static func empty() -> GridDataSource {
         return GridDataSource(title: "",
                               forceEvenColumnCount: false,
                               viewModels: { state in return [] },
-                              buttonIsEnabled: { state in return false },
-                              buttonLabelText: { state in return "" },
-                              batchSizeToUse: { state in return nil },
+                              applyActionProgressMessage: "foo",
+                              primaryButton: { state in nil })
+//                              buttonIsEnabled: { state in return false },
+//                              buttonLabelText: { state in return "" },
+//                              batchSizeToUse: { state in return nil },
 //                              statusText: { state in return "" },
-                              spaceToRecoverBytes: { state in return 0 },
-                              applyActionProgressMessage: "",
-                              applyAction: { state, callback in })
+//                              spaceToRecoverBytes: { state in return 0 },
+//                              applyActionProgressMessage: "",
+//                              applyAction: { state, callback in }
+//                                )
     }
 }

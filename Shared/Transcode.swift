@@ -18,6 +18,7 @@ class Transcode {
     }
 
     struct State {
+        var estimatedEventualSavingsBytes: UInt64 = 0
         var transcodingComplete: [PHAsset] = []
         var beingTranscoded: [TranscodeManager.BeingWorkedOn] = []
         var transcodeManagerScanningStatus = TranscodeManager.ScanningStatus.starting
@@ -99,11 +100,12 @@ extension Transcode {
                 sumBytes += UInt64(Float(sizeBytes) * asset.predictAVC1CodecProbability() * estimatedSavingsFromTranscodingAVC1toHEVC)
                 let bytes = UInt64(SizeUtil.estimateSum(partialSum: Float(sumBytes), numSamplesProcessed: i, totalSamples: samples.count, totalElements: totalAssetsCount))
                 queue.sync {
-                    state.briefStatus.readyBytes = bytes
+                    state.briefStatus.badge = .bytes(bytes)
+                    state.estimatedEventualSavingsBytes = bytes
                 }
                 emitProgressThrottled()
             }
-            print("sumBytes \(sumBytes) indexStatus.briefStatus.readyBytes \(state.briefStatus.readyBytes)")
+            print("sumBytes \(sumBytes) indexStatus.briefStatus.readyBytes \(state.briefStatus.badge)")
             queue.async {
                 state.briefStatus.isScanning = false
             }

@@ -19,25 +19,19 @@ class Notifications {
     
     static func setBadge(count: Int) {
         let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(options: [.badge, /*.alert, .sound*/]) { (granted, error) in
-            DispatchQueue.main.async {
-                UIApplication.shared.applicationIconBadgeNumber = count
-            }
-        }
-//        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
         
-//        let content = UNMutableNotificationContent()
-//        content.title = NSString.localizedUserNotificationString(forKey: "Elon said:", arguments: nil)
-//        content.body = NSString.localizedUserNotificationString(forKey: "Hello Tom！Get up, let's play with Jerry!", arguments: nil)
-//        content.badge = 5
-//        content.categoryIdentifier = "com.elonchan.localNotification"
-//        // Deliver the notification in 60 seconds.
-//        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 60.0, repeats: true)
-//        let request = UNNotificationRequest.init(identifier: "FiveSecond", content: content, trigger: trigger)
-//
-//        // Schedule the notification.
-//        let center = UNUserNotificationCenter.current()
-//        center.add(request)
+        let content = UNMutableNotificationContent()
+        content.title = NSString.localizedUserNotificationString(forKey: "Elon said:", arguments: nil)
+        content.body = NSString.localizedUserNotificationString(forKey: "Hello Tom！Get up, let's play with Jerry!", arguments: nil)
+        content.badge = count as NSNumber
+        content.categoryIdentifier = "com.SuperSoundGames.localNotification"
+        // Deliver the notification in 60 seconds.
+        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 24 * 60 * 60, repeats: true)
+        let request = UNNotificationRequest.init(identifier: "Daily", content: content, trigger: trigger)
+
+        // Schedule the notification.
+        center.add(request)
     }
 }
 

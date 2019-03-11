@@ -78,6 +78,18 @@ class FetchAssets {
             return shuffled
         }
 
+        func fetchLargestSorted(with mediaType: PHAssetMediaType) -> [PHAsset] {
+            let (largest, _) = fetchLargestAndRest(with: mediaType)            
+            return Array(largest.prefix(1000).sorted(by: PHAsset.compareBytesSize).reversed())
+        }
+
+        func fetchLargestAndRest(with mediaType: PHAssetMediaType) -> ([PHAsset], [PHAsset]) {
+            let assets = FetchAssets.manager.fetch(with: mediaType).sorted(by: PHAsset.comparePredictedRelativeSize).reversed()
+            let largest = Array(assets.prefix(1000).sorted(by: PHAsset.compareBytesSize).reversed())
+            let rest = Array(assets.suffix(assets.count - largest.count))
+            return (largest, rest)
+        }
+
         private class func getFetchResult(with mediaType: PHAssetMediaType) -> PHFetchResult<PHAsset> {
             NSLog("PHAssetFetch.fetch mediaType\(mediaType.rawValue) 1")
             let options = PHFetchOptions()

@@ -117,6 +117,7 @@ class MasterViewController2: UITableViewController, StoreSubscriber {
                 // .inexactPhotos,  // Disable for now.  Getting false duplicates
                 .inexactVideos,
                 .upgradeCompression,
+                .largeFiles,
                 .clearRecentlyDeleted]),
             ViewModel.TableSection(header: nil, rows: [
                 .savings]),
@@ -226,7 +227,7 @@ class MasterViewController2: UITableViewController, StoreSubscriber {
             cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.status.rawValue, for: indexPath)
         case .header:
             fatalError()
-        case .exactPhotos, .exactVideos, .inexactPhotos, .inexactVideos, .upgradeCompression, .clearRecentlyDeleted:
+        case .exactPhotos, .exactVideos, .inexactPhotos, .inexactVideos, .upgradeCompression, .clearRecentlyDeleted, .largeFiles:
             cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.feature.rawValue, for: indexPath)
         case .savings:
             cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.savings.rawValue, for: indexPath)
