@@ -14,7 +14,6 @@ struct AppState: StateType {
     var duplicates: Duplicates.State
     var transcode: Transcode.State
     var recentlyDeleted: RecentlyDeleted.State
-    var savings: Savings
     var preferences: Preferences.State
 
     var badgeCount: Int {
@@ -26,7 +25,6 @@ struct AppState: StateType {
                         duplicates: .empty(),
                         transcode: .empty(),
                         recentlyDeleted: .empty(),
-                        savings: .empty(),
                         preferences: .empty())
     }
 }
@@ -93,14 +91,14 @@ func appReducer(action: Action, state: AppState?) -> AppState {
         newState.preferences.totalSavingsBytes = action.totalSavingsBytes
         Preferences.Persistence.instance.save(state: newState.preferences)
     case let action as AppAction.AppliedTranscode:
-        newState.savings.transcode = newState.savings.transcode + action.savingsStats
+//        newState.savings.transcode = newState.savings.transcode + action.savingsStats
 //        SavingsFilePersistence.write(savings: newState.savings)
 
         newState.preferences.totalSavingsBytes += action.savingsStats.savingsBytes
         Preferences.Persistence.instance.save(state: newState.preferences)
 //        SavingsiCloudPersistence.instance.set(totalSavingsBytes: newState.totalSavingsBytes)
     case let action as AppAction.AppliedDeleteDuplicates:
-        newState.savings.duplicates = newState.savings.duplicates + action.savingsStats
+//        newState.savings.duplicates = newState.savings.duplicates + action.savingsStats
 //        SavingsFilePersistence.write(savings: newState.savings)
 
         newState.preferences.totalSavingsBytes += action.savingsStats.savingsBytes
