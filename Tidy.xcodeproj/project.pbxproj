@@ -87,7 +87,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0F4F814AD57E6ED267EE73E2 /* Pods_Tidy_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tidy_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		118FE1121CEF0525004F2F51 /* Tidy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tidy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		118FE1151CEF0525004F2F51 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		118FE1191CEF0525004F2F51 /* AssetGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetGridViewController.swift; sourceTree = "<group>"; };
@@ -161,9 +160,7 @@
 		83DF52992236207B008797E4 /* LargeFiles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeFiles.swift; sourceTree = "<group>"; };
 		83E60DC022065DFC0057CA78 /* Limiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Limiter.swift; sourceTree = "<group>"; };
 		9A979488A0EDDCCF5B7F74A1 /* Pods-Tidy iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tidy iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tidy iOS/Pods-Tidy iOS.debug.xcconfig"; sourceTree = "<group>"; };
-		9D50AB0E59F73F5AB02F7B20 /* Pods-Tidy tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tidy tvOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tidy tvOS/Pods-Tidy tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		C53752B4DB35F72FE5627B7A /* Pods_Tidy_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tidy_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8868A0E8445EF629A2D6535 /* Pods-Tidy tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tidy tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tidy tvOS/Pods-Tidy tvOS.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -267,8 +264,6 @@
 			children = (
 				9A979488A0EDDCCF5B7F74A1 /* Pods-Tidy iOS.debug.xcconfig */,
 				644EE375BB9F63DC839140D5 /* Pods-Tidy iOS.release.xcconfig */,
-				9D50AB0E59F73F5AB02F7B20 /* Pods-Tidy tvOS.debug.xcconfig */,
-				D8868A0E8445EF629A2D6535 /* Pods-Tidy tvOS.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -279,7 +274,6 @@
 				838B4E1921E585980025A84F /* PhotosUI.framework */,
 				838B4E1B21E585980025A84F /* Photos.framework */,
 				C53752B4DB35F72FE5627B7A /* Pods_Tidy_iOS.framework */,
-				0F4F814AD57E6ED267EE73E2 /* Pods_Tidy_tvOS.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -674,7 +668,7 @@
 				INFOPLIST_FILE = iOS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.SuperSoundGames.PhotoTidy;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chrisdanford.Tidy;
 				PRODUCT_NAME = Tidy;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
@@ -695,7 +689,7 @@
 				INFOPLIST_FILE = iOS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.SuperSoundGames.PhotoTidy;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chrisdanford.Tidy;
 				PRODUCT_NAME = Tidy;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
