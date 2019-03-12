@@ -80,7 +80,7 @@ class ViewModel {
         case upgradeCompression
         case largeFiles
         case clearRecentlyDeleted
-        case savings
+        case about
         
         func update(cell: UITableViewCell, state: AppState) {
             switch self {
@@ -110,7 +110,7 @@ class ViewModel {
             case .clearRecentlyDeleted:
                 let specialCell = cell as! FeatureTableViewCell
                 updateFeatureCell(cell: specialCell, briefStatus: state.recentlyDeleted.briefStatus)
-            case .savings:
+            case .about:
                 let aboutInfo = About.info(state: state)
                 cell.textLabel?.text = aboutInfo.inlineTitle
                 cell.detailTextLabel?.text = aboutInfo.message
@@ -141,7 +141,7 @@ class ViewModel {
             }
         }
 
-        func updateSavingsCell(cell: UITableViewCell, state: AppState) {
+        func updateAboutCell(cell: UITableViewCell, state: AppState) {
             let aboutInfo = About.info(state: state)
             cell.textLabel?.text = aboutInfo.inlineTitle
             cell.detailTextLabel?.text = aboutInfo.message
@@ -153,7 +153,7 @@ class ViewModel {
                 return 180
             case .header:
                 return 25
-            case .savings:
+            case .about:
                 return 100
             default:
                 return 40
@@ -386,7 +386,7 @@ class ViewModel {
                 alertController.addAction(action1)
                 alertController.addAction(action2)
                 return .present(alertController, false)
-            case .savings:
+            case .about:
                 let aboutInfo = About.info(state: mainStore.state)
                 let alertController = UIAlertController(title: aboutInfo.alertTitle, message: aboutInfo.message, preferredStyle: .alert)
                 let action1 = UIAlertAction(title: "Leave a Rating", style: .default) { (action:UIAlertAction) in
@@ -472,8 +472,8 @@ class ViewModel {
                 //specializedCell.selectionStyle = .none
                 
                 self.updateFeatureCell(cell: specializedCell, briefStatus: briefStatus)
-            case .savings:
-                self.updateSavingsCell(cell: cell, state: state)
+            case .about:
+                self.updateAboutCell(cell: cell, state: state)
             }
         }
     }

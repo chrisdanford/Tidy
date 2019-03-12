@@ -120,7 +120,7 @@ class MasterViewController2: UITableViewController, StoreSubscriber {
                 .largeFiles,
                 .clearRecentlyDeleted]),
             ViewModel.TableSection(header: nil, rows: [
-                .savings]),
+                .about]),
         ]
         
         for (sectionIndex, section) in model.sections.enumerated() {
@@ -229,7 +229,7 @@ class MasterViewController2: UITableViewController, StoreSubscriber {
             fatalError()
         case .exactPhotos, .exactVideos, .inexactPhotos, .inexactVideos, .upgradeCompression, .clearRecentlyDeleted, .largeFiles:
             cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.feature.rawValue, for: indexPath)
-        case .savings:
+        case .about:
             cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.savings.rawValue, for: indexPath)
         }
         row.loadCell(cell: cell, state: state)
