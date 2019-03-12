@@ -53,7 +53,7 @@ class PHAssetReplace {
         case result(Result)
     }
 
-    static let maxBatchCount = 100
+    static let maxBatchCount = 50
     static let maxBatchSizeBytes: UInt64 = 4 * 1024 * 1024 * 1024
     static let maximumQueuedBytesToApplyBeforePausing = maxBatchSizeBytes * 10
 
