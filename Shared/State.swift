@@ -20,7 +20,17 @@ struct AppState: StateType {
     var badgeCount: Int {
         return duplicates.badgeCount + transcode.badgeCount + recentlyDeleted.badgeCount
     }
-    
+    var notificationLines: [String] {
+        var notifications: [String] = []
+        if duplicates.badgeCount > 0 {
+            notifications.append("Delete \(duplicates.badgeCount) exact duplicates to save \(duplicates.briefStatus.readySavingsBytes.formattedCompactByteString)")
+        }
+        if transcode.badgeCount > 0 {
+            notifications.append("Upgrade compression of \(transcode.badgeCount) videos to save \(transcode.briefStatus.readySavingsBytes.formattedCompactByteString)")
+        }
+        return notifications
+    }
+
     static func empty() -> AppState {
         return AppState(sizes: .empty(),
                         duplicates: .empty(),

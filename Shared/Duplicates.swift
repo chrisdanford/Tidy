@@ -95,7 +95,7 @@ class Duplicates {
         }
         
         var briefStatus: BriefStatus {
-            return BriefStatus(isScanning: isFetching, badge: .bytes(bytesToDelete))
+            return BriefStatus(isScanning: isFetching, readySavingsBytes: bytesToDelete, estimatedEventualSavingsBytes: nil)
         }
     }
     
@@ -107,6 +107,11 @@ class Duplicates {
 
         var badgeCount: Int {
             return [photosExact, videosExact, photosInexact, videosInexact].reduce(0, { $0 + $1.numAssetsToDelete })
+        }
+        var briefStatus: BriefStatus {
+            return [photosExact, videosExact, photosInexact, videosInexact].reduce(BriefStatus.empty(), { (result, duplicateGroups) -> BriefStatus in
+                return result + duplicateGroups.briefStatus
+            })
         }
 
         static func empty() -> State {

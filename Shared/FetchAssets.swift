@@ -80,12 +80,14 @@ class FetchAssets {
 
         func fetchLargestSorted(with mediaType: PHAssetMediaType) -> [PHAsset] {
             let (largest, _) = fetchLargestAndRest(with: mediaType)            
-            return Array(largest.prefix(1000).sorted(by: PHAsset.compareBytesSize).reversed())
+            return Array(largest.sorted(by: PHAsset.compareBytesSize).reversed())
         }
 
+        let largestBatchSize = 500
+        
         func fetchLargestAndRest(with mediaType: PHAssetMediaType) -> ([PHAsset], [PHAsset]) {
             let assets = FetchAssets.manager.fetch(with: mediaType).sorted(by: PHAsset.comparePredictedRelativeSize).reversed()
-            let largest = Array(assets.prefix(1000).sorted(by: PHAsset.compareBytesSize).reversed())
+            let largest = Array(assets.prefix(largestBatchSize).sorted(by: PHAsset.compareBytesSize).reversed())
             let rest = Array(assets.suffix(assets.count - largest.count))
             return (largest, rest)
         }

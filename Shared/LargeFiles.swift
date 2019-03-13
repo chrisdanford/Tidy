@@ -22,7 +22,7 @@ class LargeFiles {
     class func fetch(progress: @escaping (State) -> Void) {
         var state = State.empty()
 
-        state.briefStatus.isScanning = false
+        state.briefStatus.isScanning = true
         progress(state)
         
 //        state.sortedAssets = Array(assets)

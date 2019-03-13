@@ -11,26 +11,33 @@ import ReSwift
 
 struct BriefStatus {
     var isScanning: Bool
-    enum Badge {
-        case none
-        case bytes(UInt64)
-        case count(Int)
-        
-        var message: String? {
-            switch self {
-            case .none:
-                return nil
-            case .bytes(let bytes):
-                return (bytes == 0) ? nil : bytes.formattedCompactByteString
-            case .count(let count):
-                return (count == 0) ? nil : count.formattedDecimalString
+    var readySavingsBytes: UInt64
+    var estimatedEventualSavingsBytes: UInt64?
+    var badgeMessage: String? {
+        if let bytes = estimatedEventualSavingsBytes {
+            if bytes > 0 {
+                return "~" + bytes.formattedCompactByteString
             }
         }
+        if readySavingsBytes > 0 {
+            return readySavingsBytes.formattedCompactByteString
+        }
+        return nil
     }
-    var badge: Badge
     
+    static func + (lhs: BriefStatus, rhs: BriefStatus) -> BriefStatus {
+        let estimatedEventualSavingsBytesItems = [lhs, rhs].compactMap({$0.estimatedEventualSavingsBytes})
+        let estimatedEventualSavingsBytes: UInt64?
+        if estimatedEventualSavingsBytesItems.count == 0 {
+            estimatedEventualSavingsBytes = nil
+        } else {
+            estimatedEventualSavingsBytes = estimatedEventualSavingsBytesItems.reduce(0, { $0 + $1 } )
+        }
+        
+        return BriefStatus(isScanning: lhs.isScanning || rhs.isScanning, readySavingsBytes: lhs.readySavingsBytes + rhs.readySavingsBytes, estimatedEventualSavingsBytes: estimatedEventualSavingsBytes)
+    }
     static func empty() -> BriefStatus {
-        return BriefStatus(isScanning: true, badge: .none)
+        return BriefStatus(isScanning: true, readySavingsBytes: 0, estimatedEventualSavingsBytes: nil)
     }
 }
 

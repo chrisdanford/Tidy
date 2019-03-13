@@ -92,7 +92,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     }
 
     func updateBadgeCount() {
-        Notifications.setBadge(count: mainStore.state.badgeCount)
+        Notifications.setBadgeAndScheduleNotifications(state: mainStore.state)
     }
     
     // MARK: Split view

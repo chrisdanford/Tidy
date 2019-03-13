@@ -64,11 +64,11 @@ class PHAssetReplace {
         //
         // Whether or not this error occurs seems to depend on the contents of the batch.  I'm seeing that a very large
         // file in the batch will cause the problem, and a smaller batch allows the changes to complete.  So,
-        var size: UInt64 = 0
+        var sizeBytes: UInt64 = 0
         for (i, asset) in assets.enumerated() {
-            size += asset.slow_resourceStats.totalResourcesSizeBytes
-            if size > maxBatchSizeBytes || i == maxBatchCount {
-                return i
+            sizeBytes += asset.slow_resourceStats.totalResourcesSizeBytes
+            if sizeBytes > maxBatchSizeBytes || i == maxBatchCount {
+                return i + 1
             }
         }
         return assets.count

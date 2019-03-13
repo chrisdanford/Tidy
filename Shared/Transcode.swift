@@ -18,7 +18,6 @@ class Transcode {
     }
 
     struct State {
-        var estimatedEventualSavingsBytes: UInt64 = 0
         var transcodingComplete: [PHAsset] = []
         var beingTranscoded: [TranscodeManager.BeingWorkedOn] = []
         var transcodeManagerScanningStatus = TranscodeManager.ScanningStatus.starting
@@ -100,12 +99,11 @@ extension Transcode {
                 sumBytes += UInt64(Float(sizeBytes) * asset.predictAVC1CodecProbability() * estimatedSavingsFromTranscodingAVC1toHEVC)
                 let bytes = UInt64(SizeUtil.estimateSum(partialSum: Float(sumBytes), numSamplesProcessed: i, totalSamples: samples.count, totalElements: totalAssetsCount))
                 queue.sync {
-                    state.briefStatus.badge = .bytes(bytes)
-                    state.estimatedEventualSavingsBytes = bytes
+                    state.briefStatus.estimatedEventualSavingsBytes = bytes
                 }
                 emitProgressThrottled()
             }
-            print("sumBytes \(sumBytes) indexStatus.briefStatus.readyBytes \(state.briefStatus.badge)")
+            print("sumBytes \(sumBytes) indexStatus.briefStatus \(state.briefStatus)")
             queue.async {
                 state.briefStatus.isScanning = false
             }
@@ -158,7 +156,12 @@ extension Transcode {
                     state.transcodingComplete = transcodeState.transcoded.sorted(by: PHAsset.compareCreationDate)
                     state.beingTranscoded = transcodeState.beingWorkedOn
                     state.transcodeManagerScanningStatus = transcodeState.scanningStatus
-                    //state.briefStatus.isScanning = !transcodeState.isDone
+                    
+                    state.briefStatus.readySavingsBytes = transcodeState.transcoded.reduce(0, { (result, asset) -> UInt64 in
+                        return result + UInt64(asset.transcodeStatsCached?.applyableSavingsBytes ?? 0)
+                    })
+
+                    state.briefStatus.isScanning = !transcodeState.isDone
                     if transcodeState.isDone {
                         semaphore.signal()
                     }

@@ -122,7 +122,7 @@ class ViewModel {
         }
         
         func updateCellAccessory(cell: UITableViewCell, briefStatus: BriefStatus) {
-            let badgeMessage = briefStatus.badge.message
+            let badgeMessage = briefStatus.badgeMessage
             if briefStatus.isScanning || badgeMessage != nil {
                 // Re-use the existing ActivityAndBadge, if any.
                 let activityAndBadge = (cell.accessoryView as? ActivityAndBadge) ?? ActivityAndBadge()
@@ -281,13 +281,6 @@ class ViewModel {
                 vc.set(gridDataSource: gridDataSource)
                 return .push(vc)
             case .upgradeCompression:
-                func spaceReadyToRecoverBytes(state: AppState) -> UInt64 {
-                    let savingsBytes = state.transcode.transcodingToApply.reduce(0, { (result, asset) -> Int64 in
-                        return result + (asset.transcodeStatsCached!.applyableSavingsBytes ?? 0)
-                    })
-                    return UInt64(savingsBytes)
-                }
-
                 let instructions = "The following videos can be made smaller by converting to 'High Efficiency' compression. This process is slow because the original quality video is downloaded for conversion."
                 let learnMoreText = "We'll only convert if the file size is reduced by 5% or more."
                 
@@ -308,8 +301,8 @@ class ViewModel {
                         let cells = modelCells.count > 0 ? modelCells : [ViewModel.Cell.instructions(.init(text: "No Photos or Videos", learnMore: nil, style: .emptyPlaceholder))]
 
                         let instructionsCell = ViewModel.Cell.instructions(.init(text: instructions, learnMore: learnMoreText, style: .instructions))
-                        let sectionHeader = SectionHeader.transcode(.init(readySpaceToRecover: spaceReadyToRecoverBytes(state: state),
-                                                                          estimatedEventualSavingsBytes: state.transcode.estimatedEventualSavingsBytes,
+                        let sectionHeader = SectionHeader.transcode(.init(readySpaceToRecover: state.transcode.briefStatus.readySavingsBytes,
+                                                                          estimatedEventualSavingsBytes: state.transcode.briefStatus.estimatedEventualSavingsBytes ?? 0,
                                                                           scanningStatus: state.transcode.transcodeManagerScanningStatus))
                         return [
                             ViewModel.GridSection(sectionHeader: nil, cells: [instructionsCell]),
@@ -320,7 +313,7 @@ class ViewModel {
                     primaryButton: {state in
                         let assets = state.transcode.transcodingToApply
                         let spaceToRecoverBytes = 0
-                        var buttonState = GridDataSource.Button(isEnabled: (assets.count > 0), labelText: "Replace \(assets.count.formattedDecimalString) with Upgrades", spaceToRecoverBytes: spaceReadyToRecoverBytes(state: state), applyAction: {state, callback in
+                        var buttonState = GridDataSource.Button(isEnabled: (assets.count > 0), labelText: "Replace \(assets.count.formattedDecimalString) with Upgrades", spaceToRecoverBytes: state.transcode.briefStatus.readySavingsBytes, applyAction: {state, callback in
                             let assetsToReplace = state.transcode.transcodingToApply
                             
                             PHAssetReplace.replaceWithTranscoded(assets: assetsToReplace, callback: { progressOrResult in

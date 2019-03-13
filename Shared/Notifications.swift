@@ -17,21 +17,28 @@ class Notifications {
         }
     }
     
-    static func setBadge(count: Int) {
+    static func setBadgeAndScheduleNotifications(state: AppState) {
+        let badgeCount = state.badgeCount
+        UIApplication.shared.applicationIconBadgeNumber = state.badgeCount
+
         let center = UNUserNotificationCenter.current()
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-        
-        let content = UNMutableNotificationContent()
-        content.title = NSString.localizedUserNotificationString(forKey: "Elon said:", arguments: nil)
-        content.body = NSString.localizedUserNotificationString(forKey: "Hello Tom！Get up, let's play with Jerry!", arguments: nil)
-        content.badge = count as NSNumber
-        content.categoryIdentifier = "com.SuperSoundGames.localNotification"
-        // Deliver the notification in 60 seconds.
-        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 24 * 60 * 60, repeats: true)
-        let request = UNNotificationRequest.init(identifier: "Daily", content: content, trigger: trigger)
 
-        // Schedule the notification.
-        center.add(request)
+        if badgeCount > 0 {
+            let body = state.notificationLines.map({ return "➡ " + $0 }).joined(separator: "\n")
+
+            let content = UNMutableNotificationContent()
+            content.title = NSString.localizedUserNotificationString(forKey: "You can recover storage space", arguments: nil)
+            content.body = body
+            //content.badge = count as NSNumber
+
+            let seconds: TimeInterval = 60 // 24 * 60 * 60
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: true)
+            let request = UNNotificationRequest(identifier: "Daily", content: content, trigger: trigger)
+
+            // Schedule the notification.
+            center.add(request)
+        }
     }
 }
 
