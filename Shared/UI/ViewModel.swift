@@ -244,7 +244,7 @@ class ViewModel {
                             })
                         }
                         let assetCells = viewModels(duplicateGroups: duplicateGroupsFor(state: state))
-                        let cells = assetCells.count > 0 ? assetCells : [ViewModel.Cell.instructions(.init(text: "No Photos or Videos", learnMore: nil, style: .emptyPlaceholder))]
+                        let cells = assetCells.count > 0 ? assetCells : [ViewModel.Cell.instructions(.init(text: "No Duplicates Found", learnMore: nil, style: .emptyPlaceholder))]
                         
                         let instructionsCell = ViewModel.Cell.instructions(.init(text: instructions, learnMore: learnMoreText, style: .instructions))
                         let sectionHeader = ViewModel.SectionHeader.duplicates(ViewModel.DuplicatesSectionHeader(numColumnPairs: 2))
@@ -298,7 +298,7 @@ class ViewModel {
                         })
                         
                         let modelCells = (viewModels1 + viewModels2).map({ ViewModel.Cell.asset($0) })
-                        let cells = modelCells.count > 0 ? modelCells : [ViewModel.Cell.instructions(.init(text: "No Photos or Videos", learnMore: nil, style: .emptyPlaceholder))]
+                        let cells = modelCells.count > 0 ? modelCells : [ViewModel.Cell.instructions(.init(text: "No Upgrades Available", learnMore: nil, style: .emptyPlaceholder))]
 
                         let instructionsCell = ViewModel.Cell.instructions(.init(text: instructions, learnMore: learnMoreText, style: .instructions))
                         let sectionHeader = SectionHeader.transcode(.init(readySpaceToRecover: state.transcode.briefStatus.readySavingsBytes,
