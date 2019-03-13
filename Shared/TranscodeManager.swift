@@ -149,7 +149,7 @@ class TranscodeManager {
     
     func boostPriority(asset: PHAsset) {
         queue.async {
-            NSLog("boostPriority \(asset.slow_resourceStats.originalFileName)")
+            NSLog("boostPriority \(asset.localIdentifier)")
             let index = self.assetsToCheckReversePriority.lastIndex(of: asset)
             if let index2 = index {
                 self.assetsToCheckReversePriority.remove(at: index2)

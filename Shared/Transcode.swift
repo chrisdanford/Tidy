@@ -85,26 +85,20 @@ extension Transcode {
         }
         
         func roughEstimate() {
-            let rawSamples = FetchAssets.manager.fetchSamples(with: .video)
-            let totalAssetsCount = FetchAssets.manager.fetch(with: .video).count
+            let (estimatedLargestAssets, restAssets) = FetchAssets.manager.fetchEstimatedLargestFilesAndRest(with: .video)
 
-            let samples = filterOutHighFrameRate(assets: rawSamples)
-            
-            var sumBytes: UInt64 = 0
-            var i = 0
-            for asset in samples {
-                i += 1
+            func getSize(asset: PHAsset) -> UInt64 {
                 let sizeBytes = asset.slow_resourceStats.totalResourcesSizeBytes
-
-                sumBytes += UInt64(Float(sizeBytes) * asset.predictAVC1CodecProbability() * estimatedSavingsFromTranscodingAVC1toHEVC)
-                let bytes = UInt64(SizeUtil.estimateSum(partialSum: Float(sumBytes), numSamplesProcessed: i, totalSamples: samples.count, totalElements: totalAssetsCount))
+                return UInt64(Float(sizeBytes) * asset.predictAVC1CodecProbability() * estimatedSavingsFromTranscodingAVC1toHEVC)
+            }
+            SizeUtil.predictSize(largeAssets: estimatedLargestAssets, restAssets: restAssets, getSize: getSize) { (estimate) in
                 queue.sync {
-                    state.briefStatus.estimatedEventualSavingsBytes = bytes
+                    state.briefStatus.estimatedEventualSavingsBytes = estimate
                 }
                 emitProgressThrottled()
             }
-            print("sumBytes \(sumBytes) indexStatus.briefStatus \(state.briefStatus)")
             queue.async {
+                print("state.briefStatus \(state.briefStatus)")
                 state.briefStatus.isScanning = false
             }
             emitProgressThrottled()

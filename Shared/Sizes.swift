@@ -16,9 +16,9 @@ class Sizes {
             var count: Int
             var totalSizeBytes: UInt64
 
-//            static func + (lhs: CategoryStats, rhs: CategoryStats) -> CategoryStats {
-//                return CategoryStats(count: lhs.count + rhs.count, totalSizeBytes: lhs.totalSizeBytes + rhs.totalSizeBytes)
-//            }
+            static func + (lhs: CategoryStats, rhs: CategoryStats) -> CategoryStats {
+                return CategoryStats(isScanning: lhs.isScanning || rhs.isScanning, count: lhs.count + rhs.count, totalSizeBytes: lhs.totalSizeBytes + rhs.totalSizeBytes)
+            }
             
             static func empty() -> CategoryStats {
                 return CategoryStats(isScanning: true, count: 0, totalSizeBytes: 0)
@@ -53,42 +53,52 @@ class Sizes {
         // There appears to be a global lock on slow_resourceStats that's causing a maximum throughput of 1ms/call
         // acrross all threads on my device.  So, there's no benefit to making this multithreaded.
 
-        DispatchQueue.global().async {
-            predictSize(mediaType: .image, progress: { (stats) in
+        func photos() {
+            let assets = FetchAssets.manager.fetch(with: .image)
+            queue.sync {
+                state.photos.count = assets.count
+            }
+            func getSize(asset: PHAsset) -> UInt64 {
+                return asset.slow_resourceStats.totalResourcesSizeBytes
+            }
+            SizeUtil.predictSize(assets: assets, getSize: getSize, progress: { (estimate) in
                 queue.sync {
-                    state.photos = stats
+                    state.photos.totalSizeBytes = estimate
                 }
                 emitProgressThrottled()
             })
+            queue.sync {
+                state.photos.isScanning = false
+            }
+            emitProgressThrottled()
         }
-        DispatchQueue.global().async {
-            predictSize(mediaType: .video, progress: { (stats) in
+        photos()
+        func videos() {
+            //
+            // Videos are highly variable in size, and we can fairly quickly get the largest videos.
+            // Fetch and accurately measure a chunk of the largest videos, then estimate the size of the
+            // rest of the videos (the pool of non-largest).  This allows us to achieve an accurate measure
+            // of the total library size using fewer samples than sampling randomly
+            //
+            let assets = FetchAssets.manager.fetch(with: .video)
+            queue.sync {
+                state.videos.count = assets.count
+            }
+            func getSize(asset: PHAsset) -> UInt64 {
+                return asset.slow_resourceStats.totalResourcesSizeBytes
+            }
+            let (largestAssets, restAssets) = FetchAssets.manager.fetchEstimatedLargestFilesAndRest(with: .video)
+            SizeUtil.predictSize(largeAssets: largestAssets, restAssets: restAssets, getSize: getSize, progress: { (estimate) in
                 queue.sync {
-                    state.videos = stats
+                    state.videos.totalSizeBytes = estimate
                 }
                 emitProgressThrottled()
             })
+            queue.sync {
+                state.videos.isScanning = false
+            }
+            emitProgressThrottled()
         }
-    }
-    
-    class func predictSize(mediaType: PHAssetMediaType, progress: (State.CategoryStats) -> ()) {
-        let assets = FetchAssets.manager.fetch(with: mediaType)
-        let assetsSample = FetchAssets.manager.fetchSamples(with: mediaType)
-        let totalCount = assets.count
-        
-        var i = 0
-        var totalBytes: UInt64 = 0
-        var stats = State.CategoryStats.init(isScanning: true, count: totalCount, totalSizeBytes: 0)
-        for asset in assetsSample {
-            i += 1
-            totalBytes += asset.slow_resourceStats.totalResourcesSizeBytes
-            
-            let estimatedBytes = SizeUtil.estimateSum(partialSum: Float(totalBytes), numSamplesProcessed: i, totalSamples: assetsSample.count, totalElements: assets.count)
-
-            stats.totalSizeBytes = UInt64(estimatedBytes)
-            progress(stats)
-        }
-        stats.isScanning = false
-        progress(stats)
+        videos()
     }
 }

@@ -75,6 +75,11 @@ class AppManager {
     }
     
     func fetchAll() {
+        DispatchQueue.global().async {
+            self.fetchAllInternal()
+        }
+    }
+    func fetchAllInternal() {
         NSLog("clearAndFetchAll start")
         cancellationTokenSource = CancellationTokenSource()
         NSLog("clearAndFetchAll 1")
@@ -83,12 +88,13 @@ class AppManager {
         fetchDuplicates()
         NSLog("clearAndFetchAll 4")
         fetchSizes()
-        fetchLargeFiles()
         NSLog("clearAndFetchAll 5")
-        fetchRecentlyDeleted()
+        fetchLargeFiles()
         NSLog("clearAndFetchAll 6")
-        fetchPreferences()
+        fetchRecentlyDeleted()
         NSLog("clearAndFetchAll 7")
+        fetchPreferences()
+        NSLog("clearAndFetchAll 8")
     }
 
     func appliedDeletedDuplicates(stats: Savings.Stats) {

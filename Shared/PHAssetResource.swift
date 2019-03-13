@@ -9,14 +9,9 @@
 import Photos
 
 extension PHAsset {
-    // Don't hold a reference to the PHAsset.
-    //static var resourceStatsCache = [String: ResourceStats]()
-    //static let queue = DispatchQueue(label: "resourceStatsCache")
-
     struct ResourceStats: Codable {
         let totalResourcesSizeBytes: UInt64
         let originalFileName: String?
-        //let uti: String?
 
         enum CodingKeys: CodingKey {
             case totalResourcesSizeBytes
@@ -25,18 +20,9 @@ extension PHAsset {
     }
     
     var slow_resourceStats: ResourceStats {
-        var stats: ResourceStats? = nil
         let key = localIdentifier
-        stats = Caches.resourceStatsCache.get(key: key)
-        
-        if let stats2 = stats {
-            return stats2
-        }
-
-        let newStats = computeResourceStats
-        Caches.resourceStatsCache.put(key: key, value: newStats)
-        stats = newStats
-        return newStats
+        let stats = Caches.resourceStatsCache.get(key: key, computeValue: { computeResourceStats })
+        return stats!
     }
     
     private var computeResourceStats: ResourceStats {
@@ -53,8 +39,6 @@ extension PHAsset {
             let resources = resources.filter { $0.type == resourceType }
             fileName = resources.first?.originalFilename
         }
-        
-        //let uti = resources.first?.value(forKey: "uti") as? String
         
         return ResourceStats(totalResourcesSizeBytes: sumResourceBytes, originalFileName: fileName /*, uti: uti*/)
     }

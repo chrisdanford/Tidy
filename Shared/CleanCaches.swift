@@ -44,21 +44,4 @@ class CleanCaches {
         Caches.transcodeStatsCache.filterToKeys(keys: videosWithTranscodedFileKeys)
         TranscodedCacheFiles.clearUnused(lastPathComponentsToKeep: lastPathComponentsToKeep)
     }
-    
-//    // If the app terminates mid-transcode, we might leave behind temp files.
-//    // Since these could be huge, clean them up periodically.
-//    // The system would clean temp files eventually, but since we know that there's no chance of re-use,
-//    static func cleanTemp() {
-//        let dir = FileManager.default.temporaryDirectory
-//
-//        if let files = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil, options: []) {
-//            for file in files {
-//                do {
-//                    try FileManager.default.removeItem(at: file)
-//                } catch {
-//                    NSLog("failed to delete temp file \(file)")
-//                }
-//            }
-//        }
-//    }
 }

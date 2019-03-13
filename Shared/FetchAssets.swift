@@ -35,7 +35,6 @@ class FetchAssets {
             videosInternal = Manager.fetchInternal(with: .video)
             imagesInternal = Manager.fetchInternal(with: .image)
             CleanCaches.cleanCaches(imageAssets: imagesInternal, videoAssets: videosInternal)
-            //CleanCaches.cleanTemp()
         }
         
         func fetch(with mediaType: PHAssetMediaType) -> [PHAsset] {
@@ -47,25 +46,12 @@ class FetchAssets {
             default:
                 fatalError()
             }
-    //        NSLog("PHAssetFetch \(mediaType.rawValue) \(date2.timeIntervalSinceNow)")
-    //        return ret
         }
                 
-        func fetchSamples(with mediaType: PHAssetMediaType) -> [PHAsset] {
+        func sampleStabilyAndRandomize<T>(assets: [T]) -> [T] {
             // Photos are much more uniform in size than video because video is variable length.
             // Static numbers chosen so that the amount of time to scan is bounded not proportional to library size
-            let preferredSampleSize: Int
-            let assets: [PHAsset]
-            switch mediaType {
-            case .video:
-                preferredSampleSize = 2500
-            case .image:
-                preferredSampleSize = 750
-            default:
-                fatalError()
-            }
-
-            assets = fetch(with: mediaType)
+            let preferredSampleSize = 500
 
             // Sample but in a stable way so that if we have to refresh this data,
             // we end up choosing the same PHAssets that have size data cached.
@@ -79,17 +65,17 @@ class FetchAssets {
         }
 
         func fetchLargestSorted(with mediaType: PHAssetMediaType) -> [PHAsset] {
-            let (largest, _) = fetchLargestAndRest(with: mediaType)            
-            return Array(largest.sorted(by: PHAsset.compareBytesSize).reversed())
+            let (estimatedLargest, _) = fetchEstimatedLargestFilesAndRest(with: mediaType)
+            return Array(estimatedLargest.sorted(by: PHAsset.compareBytesSize).reversed())
         }
 
         let largestBatchSize = 500
         
-        func fetchLargestAndRest(with mediaType: PHAssetMediaType) -> ([PHAsset], [PHAsset]) {
-            let assets = FetchAssets.manager.fetch(with: mediaType).sorted(by: PHAsset.comparePredictedRelativeSize).reversed()
-            let largest = Array(assets.prefix(largestBatchSize).sorted(by: PHAsset.compareBytesSize).reversed())
-            let rest = Array(assets.suffix(assets.count - largest.count))
-            return (largest, rest)
+        func fetchEstimatedLargestFilesAndRest(with mediaType: PHAssetMediaType) -> ([PHAsset], [PHAsset]) {
+            let assets = fetch(with: mediaType).sorted(by: PHAsset.comparePredictedRelativeSize).reversed()
+            let estimatedLargestAssets = Array(assets.prefix(largestBatchSize))
+            let restAssets = Array(assets.suffix(assets.count - estimatedLargestAssets.count))
+            return (estimatedLargestAssets, restAssets)
         }
 
         private class func getFetchResult(with mediaType: PHAssetMediaType) -> PHFetchResult<PHAsset> {

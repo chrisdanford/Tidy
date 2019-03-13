@@ -25,4 +25,27 @@ class SizeUtil {
         let discountedSum = estimatedSum * (1.0 - reduceBytesEstimateByPercent)
         return discountedSum
     }
+    
+    class func predictSize<T>(assets: [T], getSize: (T) -> UInt64, progress: (UInt64) -> ()) {
+        let samples = FetchAssets.manager.sampleStabilyAndRandomize(assets: assets)
+        var sum: UInt64 = 0
+        var i = 0
+        for asset in samples {
+            i += 1
+            sum += getSize(asset)
+            let estimate = SizeUtil.estimateSum(partialSum: Float(sum), numSamplesProcessed: i, totalSamples: samples.count, totalElements: assets.count)
+            progress(UInt64(estimate))
+        }
+    }
+    
+    class func predictSize<T>(largeAssets: [T], restAssets: [T], getSize: (T) -> UInt64, progress: (UInt64) -> ()) {
+        var largeAssetsSum: UInt64 = 0
+        for asset in largeAssets {
+            largeAssetsSum += getSize(asset)
+            progress(UInt64(largeAssetsSum))
+        }
+        predictSize(assets: restAssets, getSize: getSize) { (estimate) in
+            progress(largeAssetsSum + estimate)
+        }
+    }
 }

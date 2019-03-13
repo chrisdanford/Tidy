@@ -24,9 +24,6 @@ class LargeFiles {
 
         state.briefStatus.isScanning = true
         progress(state)
-        
-//        state.sortedAssets = Array(assets)
-//        progress(state)
 
         state.sortedAssets = FetchAssets.manager.fetchLargestSorted(with: .video)
         state.briefStatus.isScanning = false

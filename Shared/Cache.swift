@@ -63,12 +63,24 @@ class Cache<K, V: Codable> where K : Hashable, K: Codable {
         queue.sync {
             value = data[key]
         }
-        if value != nil {
-            //NSLog("cache hit")
+        return value
+    }
+
+    func get(key: K, computeValue: () -> V?) -> V? {
+        var value: V?
+        queue.sync {
+            value = data[key]
+            if value == nil {
+                value = computeValue()
+                if value != nil {
+                    data[key] = value
+                    self.throttledPersistToDisk()
+                }
+            }
         }
         return value
     }
-    
+
     func put(key: K, value: V) {
         queue.sync {
             data[key] = value
