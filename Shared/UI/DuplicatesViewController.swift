@@ -18,7 +18,8 @@ class DuplicatesViewController: UIViewController, StoreSubscriber {
     @IBOutlet weak var applyBarButtonItem: UIBarButtonItem!
     @IBOutlet weak var spaceToRecoverBarButtonItem: UIBarButtonItem!
     
-    var availableWidth: CGFloat = 0
+    var lastWidth: CGFloat = 0
+    var lastColumnCount: Int = 0
 
     var state = AppState.empty()
     var sectionModels = [ViewModel.GridSection]()
@@ -249,28 +250,39 @@ class DuplicatesViewController: UIViewController, StoreSubscriber {
     }
      */
     
+    static func numberOfColsFrom(width: CGFloat, forceEvenColumnCount: Bool) -> Int {
+        let iPhone6PointsWidth = CGFloat(375)
+        let minDimension: CGFloat = iPhone6PointsWidth / CGFloat(4)
+        let minItemWidth: CGFloat = minDimension
+        let columnCount = (width / minItemWidth).rounded(.towardZero)
+        
+        if forceEvenColumnCount {
+            return Int((columnCount / 2).rounded(.towardZero) * 2)
+        } else {
+            return Int(columnCount)
+        }
+    }
+    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         let width = view.bounds.width
         // Adjust the item size if the available width has changed.
-        if availableWidth != width {
-            availableWidth = width
-            let minDimension: CGFloat = 100
-            let minItemWidth: CGFloat = minDimension
-            let columnCount = (availableWidth / minItemWidth).rounded(.towardZero)
-            
-            let columnCount2: CGFloat
-            if gridDataSource.forceEvenColumnCount {
-                columnCount2 = (columnCount / 2).rounded(.towardZero) * 2
-            } else {
-                columnCount2 = columnCount
-            }
-            
-            let finalItemDimension = (availableWidth - columnCount2 - 1) / columnCount2
+        if lastWidth != width {
+            lastWidth = width
+            let columnCount = DuplicatesViewController.numberOfColsFrom(width: width, forceEvenColumnCount: gridDataSource.forceEvenColumnCount)
+            lastColumnCount = columnCount
+            let finalItemDimension = width / CGFloat(columnCount)
             collectionViewLayout.itemSize = CGSize(width: finalItemDimension, height: finalItemDimension)
+        
+            let visibleHeaderViews = collectionView.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
+            for header in visibleHeaderViews {
+                if let specificHeader = header as? DuplicatesSectionHeaderView {
+                    specificHeader.set(columnCount: columnCount)
+                }
+            }
         }
     }
-
+    
     @IBAction func actionRemoveDuplicates(_ sender: Any) {
         let progressController = self.showProgressHUD(message: self.gridDataSource.applyActionProgressMessage)
         let state = self.state
@@ -430,6 +442,7 @@ extension DuplicatesViewController: UICollectionViewDataSource {
                 case .duplicates(let model):
                     let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "DuplicatesSectionHeaderView", for: indexPath) as! DuplicatesSectionHeaderView
                     header.load(model: model)
+                    header.set(columnCount: self.lastColumnCount)
                     return header
                 case .transcode(let model):
                     let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "TranscodeSectionHeaderView", for: indexPath) as! TranscodeSectionHeaderView

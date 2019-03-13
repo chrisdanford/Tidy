@@ -24,10 +24,13 @@ class DuplicatesSectionHeaderView: UICollectionReusableView {
             toDeleteLabel.layer.borderColor = UIColor.red.cgColor
             toDeleteLabel.layer.borderWidth = 3
         }
-        
+    }
+    
+    func set(columnCount: Int) {
+        let numColumnPairs = columnCount / 2
         let template = outerStackView.subviews[0]
 
-        let numToAdd = model.numColumnPairs - outerStackView.subviews.count
+        let numToAdd = numColumnPairs - outerStackView.subviews.count
         if numToAdd > 0 {
             for _ in 0..<numToAdd {
                 outerStackView.addArrangedSubview(template.clone())
