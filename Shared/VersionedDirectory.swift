@@ -9,10 +9,6 @@
 import Foundation
 
 class VersionedDirectory {
-//    let version: Int
-//    let baseDirectoryURL: URL
-//    let versionedDirectoryURL: URL
-
     class func createDirectory(forBaseDirectory baseDirectory: URL, version: Int) throws -> URL {
         let versionedDirectoryURL = baseDirectory.appendingPathComponent(String(version))
         try? FileManager.default.createDirectory(at: versionedDirectoryURL, withIntermediateDirectories: true)

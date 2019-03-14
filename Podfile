@@ -6,11 +6,19 @@ target 'Tidy iOS' do
   use_frameworks!
 
   # Pods for Tidy iOS
-  pod 'DeepDiff'
-  pod 'Charts'
-  pod 'ReSwift'
-  pod 'CocoaImageHashing', :git => 'https://github.com/ameingast/cocoaimagehashing.git'
-  pod 'ReachabilitySwift'
-  pod 'JGProgressHUD'
+  pod 'DeepDiff', '1.4.0'
+  pod 'Charts', '3.2.1'
+  pod 'ReSwift', '4.0.1'
+  pod 'CocoaImageHashing', '1.6.1'
+  pod 'ReachabilitySwift', '4.3.0'
+  pod 'JGProgressHUD', '2.0.3'
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      target.build_settings(config.name)['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+    end
+  end
 end
 

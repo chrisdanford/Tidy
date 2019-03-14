@@ -14,10 +14,6 @@ class RecentlyDeleted {
         let assets: [PHAsset]
         let briefStatus: BriefStatus
         
-//        var briefStatus: BriefStatus {
-//            return BriefStatus(isScanning: true, readyBytes: 151203210)
-//        }
-        
         var badgeCount: Int {
             return assets.count
         }

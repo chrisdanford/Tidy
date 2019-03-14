@@ -69,14 +69,6 @@ struct Preferences {
 
         @objc func onUbiquitousKeyValueStoreDidChangeExternally(notification:Notification) {
             print("onUbiquitousKeyValueStoreDidChangeExternally")
-            //        if let userInfo = notification.userInfo {
-            //            if let changeReason = userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? NSNumber {
-            //                print("Change reason = \(changeReason)")
-            //            }
-            //            if let changedKeys = userInfo[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String] {
-            //                print("ChangedKeys = \(changedKeys)")
-            //            }
-            //        }
             AppManager.instance.setPreferences(preferences: state)
         }
     }

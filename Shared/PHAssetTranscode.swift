@@ -14,40 +14,7 @@ extension PHAsset {
         let key = localIdentifier
         return Caches.transcodeStatsCache.get(key: key)
     }
-    
-    /*
-    func slow_transcodeSync(downloadProgress: @escaping (Double) -> ()) -> AVAsset.TranscodeResult {
-        let key = localIdentifier
-        let value = Caches.transcodeStatsCache.get(key: key)
         
-        if let value2 = value {
-            return .success(value2)
-        }
-        
-        let transcodeResult = transcodeSync(downloadProgress: downloadProgress)
-        switch transcodeResult {
-        case .success(let transcodeSuccessStats):
-            Caches.transcodeStatsCache.put(key: key, value: transcodeSuccessStats)
-        default:
-            break
-        }
-        return transcodeResult
-    }
- 
-    private func transcodeSync(downloadProgress: @escaping (Double) -> ()) -> AVAsset.TranscodeResult {
-        let semaphore = DispatchSemaphore(value: 0)
-        var result: AVAsset.TranscodeResult?
-        NSLog("transcodeSync start \(self.localIdentifier)")
-        self.transcodeAsync(downloadProgress: downloadProgress, completion: { (transcodeStatus) in
-            NSLog("transcodeSync end \(self.localIdentifier)")
-            result = transcodeStatus
-            semaphore.signal()
-        })
-        semaphore.wait()
-        return result!
-    }
-    */
-    
     enum Progress {
         case waitingToDownload
         case downloading(Double)
@@ -176,65 +143,4 @@ extension PHAsset {
 enum AssetStatsError: Error {
     case errorGettingDataRate
     case errorGettingTimeRange
-}
-
-//extension AVAssetTrack {
-//    func estimatedTotalSizeBytes() throws -> UInt64 {
-//        // I'm sometimes seeing tracks with estimatedDataRate of 0 and timeRange.duration.seconds of NaN.
-//        // Handle that.
-//        let a = estimatedDataRate
-//        if a == 0 {
-//            throw AssetStatsError.errorGettingDataRate
-//        }
-//        let b = timeRange
-//        if b.duration.seconds.isNaN {
-//            throw AssetStatsError.errorGettingDataRate
-//        }
-//        let bits = Double(a) * b.duration.seconds
-//        return UInt64(bits/8)
-//    }
-//}
-
-extension AVAsset {
-    
-    //    var estimatedDataRate: Float {
-    //        return self.tracks.map { $0.estimatedDataRate }
-    //            .reduce(0.0) { (sum, newVal) -> Float in
-    //                return sum + newVal }
-    //    }
-    
-    //    func estimatedTotalSizeBytes() throws -> UInt64 {
-    //        return try tracks.reduce(0, { (result, track) -> UInt64 in
-    //            let bytes = try track.estimatedTotalSizeBytes()
-    //            return 0 + bytes
-    //        })
-    //    }
-    
-    //    var stats: PhotosUtil.AssetStatsResult {
-    //let date = Date()
-    //let track = self.tracks.first
-    //NSLog("got first track in \(date.timeIntervalSinceNow)")
-    //        guard let firstVideoTrack = self.tracks(withMediaType: .video).first
-    //            else { return .error }
-    //NSLog("got video track in \(date.timeIntervalSinceNow)")
-    //        let videoCodec = self.videoCodec
-    //NSLog("got videoCodec in \(date.timeIntervalSinceNow)")
-    //let size = firstVideoTrack.naturalSize.applying(firstVideoTrack.preferredTransform)
-    //NSLog("got size in \(date.timeIntervalSinceNow)")
-    //let roundedSize = CGSize(width: abs(size.width), height: abs(size.height))
-    //let durationSeconds = firstVideoTrack.timeRange.duration.seconds
-    //NSLog("got seconds in \(date.timeIntervalSinceNow)")
-    //if durationSeconds.isNaN {
-    //    NSLog("nan")
-    //    return .error
-    //}
-    
-    //        guard let estimatedTotalSizeBytes = try? self.estimatedTotalSizeBytes() else {
-    //            return .error
-    //        }
-    //NSLog("got estimated size in \(date.timeIntervalSinceNow)")
-    //        let stats = PhotosUtil.AssetStats(/*naturalSizeTransformed: roundedSize, durationSeconds: Float(durationSeconds), fileSizeBytes: fileSizeBytes, */videoCodec: videoCodec)
-    //NSLog("got stats in \(date.timeIntervalSinceNow)")
-    //        return .success(stats)
-    //    }
 }

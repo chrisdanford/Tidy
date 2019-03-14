@@ -12,11 +12,6 @@ class GridViewHeader: UICollectionReusableView {
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var progress: UIProgressView!
     
-//    func set(indexStatus: Transcode.IndexStatus) {
-//        label.text = indexStatus.statusText
-//        progress.progress = indexStatus.progress
-//    }
-    
     override func prepareForReuse() {
         super.prepareForReuse()
         label.text = nil

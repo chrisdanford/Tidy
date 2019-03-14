@@ -49,9 +49,7 @@ class Sizes {
             progress(copy!)
         }
         
-
-        // There appears to be a global lock on slow_resourceStats that's causing a maximum throughput of 1ms/call
-        // acrross all threads on my device.  So, there's no benefit to making this multithreaded.
+        // slow_resourceStats is massively bottlenecked by RPC, so there's there's no benefit to making this multithreaded.
 
         func photos() {
             let assets = FetchAssets.manager.fetch(with: .image)

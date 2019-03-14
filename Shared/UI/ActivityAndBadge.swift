@@ -20,11 +20,8 @@ class ActivityAndBadge: UIStackView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
-        //self.backgroundColor = UIColor.red
 
         for view in [activityView, label] {
-//            stackView.removeArrangedSubview(view)
-//            view.removeFromSuperview()
             self.addArrangedSubview(view)
         }
     }
@@ -67,7 +64,6 @@ class ActivityAndBadge: UIStackView {
         let toAdd = (0.5 * label.font.pointSize).rounded()
         frame.size.height = frame.size.height + toAdd
         frame.size.width = frame.size.width + toAdd
-        //frame.size.width = (count <= 9) ? frame.size.height : frame.size.width + (int)fontSize;
         label.frame = frame
 
         // Set radius and clip to bounds
@@ -78,9 +74,6 @@ class ActivityAndBadge: UIStackView {
         let width = visibleSubviews.reduce(0, { max($0, $1.frame.size.width) })
         let height = visibleSubviews.reduce(0, { $0 + $1.frame.size.height })
         
-//        for view in subviews {
-//            stackView.addArrangedSubview(view)
-//        }
         stackView.axis = .vertical
         stackView.frame = CGRect(x: 0, y: 0, width: width, height: height)
         stackView.distribution = .fillEqually

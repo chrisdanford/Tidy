@@ -75,7 +75,6 @@ class ViewModel {
         case header
         case exactPhotos
         case exactVideos
-        case inexactPhotos
         case inexactVideos
         case upgradeCompression
         case largeFiles
@@ -95,9 +94,6 @@ class ViewModel {
             case .exactVideos:
                 let specialCell = cell as! FeatureTableViewCell
                 updateFeatureCell(cell: specialCell, briefStatus: state.duplicates.videosExact.briefStatus)
-            case .inexactPhotos:
-                let specialCell = cell as! FeatureTableViewCell
-                updateFeatureCell(cell: specialCell, briefStatus: state.duplicates.photosInexact.briefStatus)
             case .inexactVideos:
                 let specialCell = cell as! FeatureTableViewCell
                 updateFeatureCell(cell: specialCell, briefStatus: state.duplicates.videosInexact.briefStatus)
@@ -168,15 +164,13 @@ class ViewModel {
         
         func selectionAction() -> ViewControllerAction {
             switch self {
-            case .exactPhotos, .exactVideos, .inexactPhotos, .inexactVideos:
+            case .exactPhotos, .exactVideos, .inexactVideos:
                 func duplicateGroupsFor(state: AppState) -> Duplicates.Groups {
                     switch self {
                     case .exactPhotos:
                         return state.duplicates.photosExact
                     case .exactVideos:
                         return state.duplicates.videosExact
-                    case .inexactPhotos:
-                        return state.duplicates.photosInexact
                     case .inexactVideos:
                         return state.duplicates.videosInexact
                     default:
@@ -190,8 +184,6 @@ class ViewModel {
                     title = "Duplicate Photos"
                 case .exactVideos:
                     title = "Duplicate Videos"
-                case .inexactPhotos:
-                    title = "Resized Photos"
                 case .inexactVideos:
                     title = "Resized Copies"
                 default:
@@ -202,7 +194,7 @@ class ViewModel {
                 switch self {
                 case .exactPhotos, .exactVideos:
                     instructions = "The following have identical metadata and contents. We'll keep one and delete the rest."
-                case .inexactPhotos, .inexactVideos:
+                case .inexactVideos:
                     instructions = "The have have identical creation dates, durations, and near-identical thumbnails. We'll keep the highest quality version."
                 default:
                     fatalError()
@@ -214,7 +206,7 @@ class ViewModel {
                 switch self {
                 case .exactPhotos, .exactVideos:
                     showModifiedDate = false
-                case .inexactPhotos, .inexactVideos:
+                case .inexactVideos:
                     showModifiedDate = true
                 default:
                     fatalError()
@@ -260,8 +252,6 @@ class ViewModel {
                         let buttonState = GridDataSource.Button(isEnabled: duplicateGroups.groups.count > 0, labelText: "Apply \(formattedCount) Deletes", spaceToRecoverBytes: duplicateGroups.bytesToDelete, applyAction: { state, callback in
                             let duplicateGroups = duplicateGroupsFor(state: state)
                             
-                            // debugging
-                            //let modifiedDuplicateGroups = Duplicates.Groups(isFetching: false, groups: Array(duplicateGroups.groups.prefix(1)))
                             let modifiedDuplicateGroups = duplicateGroups
                             
                             let diff = DuplicatesDiff.createDiff(duplicateGroups: modifiedDuplicateGroups)
@@ -414,7 +404,7 @@ class ViewModel {
                 statusCell.set(photosSizes: state.sizes)
             case .header:
                 cell.textLabel!.text = NSLocalizedString("Clear Some Space", comment: "")
-            case .exactPhotos, .exactVideos, .inexactPhotos, .inexactVideos, .upgradeCompression, .clearRecentlyDeleted, .largeFiles:
+            case .exactPhotos, .exactVideos, .inexactVideos, .upgradeCompression, .clearRecentlyDeleted, .largeFiles:
                 let title: String
                 let image: UIImage
                 let briefStatus: BriefStatus
@@ -427,10 +417,6 @@ class ViewModel {
                     title = NSLocalizedString("Duplicate Videos", comment: "")
                     image = UIImage(named: "duplicateVideo")!
                     briefStatus = state.duplicates.videosExact.briefStatus
-                case .inexactPhotos:
-                    title = NSLocalizedString("Resized Photos", comment: "")
-                    image = UIImage(named: "lowQuality")!
-                    briefStatus = state.duplicates.photosInexact.briefStatus
                 case .inexactVideos:
                     title = NSLocalizedString("Resized Copies", comment: "")
                     image = UIImage(named: "lowQuality")!
@@ -502,13 +488,5 @@ struct GridDataSource {
                               viewModels: { state in return [] },
                               applyActionProgressMessage: "foo",
                               primaryButton: { state in nil })
-//                              buttonIsEnabled: { state in return false },
-//                              buttonLabelText: { state in return "" },
-//                              batchSizeToUse: { state in return nil },
-//                              statusText: { state in return "" },
-//                              spaceToRecoverBytes: { state in return 0 },
-//                              applyActionProgressMessage: "",
-//                              applyAction: { state, callback in }
-//                                )
     }
 }

@@ -326,11 +326,6 @@ class AssetViewController: UIViewController {
         func applyFilter(_: UIAlertAction) {
             // Set up a handler to handle prior edits.
             let options = PHContentEditingInputRequestOptions()
-            /*options.canHandleAdjustmentData = {
-                // intentionally request the latest version
-                $0.formatIdentifier == self.formatIdentifier && $0.formatVersion == self.formatVersion
-            }
-            */
             
             // Prepare for editing.
             asset.requestContentEditingInput(with: options, completionHandler: { input, info in
@@ -502,68 +497,6 @@ class AssetViewController: UIViewController {
         guard let avAsset = input.audiovisualAsset
             else { fatalError("Can't fetch the AVAsset to edit.") }
         
-        
-        
-        
-//        let formatsKey = "availableMetadataFormats"
-//
-//        avAsset.loadValuesAsynchronously(forKeys: [formatsKey]) {
-//            var error: NSError? = nil
-//            let status = avAsset.statusOfValue(forKey: formatsKey, error: &error)
-//            if status == .loaded {
-//                for format in avAsset.availableMetadataFormats {
-//                    let metadata = avAsset.metadata(forFormat: format)
-//                    // process format-specific metadata collection
-//                }
-//            }
-//        }
-
-        
-        
-        
-        
-        
-        //tracksWithMediaType:AVMediaTypeVideo
-//        let composition2 = AVVideoComposition(propertiesOf: <#T##AVAsset#>)
-        
-        
-        
-        /*
- 
- AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
- instruction.timeRange = CMTimeRangeMake(kCMTimeZero, asset.duration);
- 
- AVMutableVideoCompositionLayerInstruction *layerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:compositionVideoTrack];
- 
- CGAffineTransform rotationTransform = CGAffineTransformMakeRotation(M_PI_2);
- 
- [layerInstruction setTransform:rotationTransform atTime:kCMTimeZero];
- instruction.layerInstructions = @[layerInstruction];
- 
- AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
- videoComposition.renderSize = CGSizeMake(videoWidth, videoHeight);
- videoComposition.instructions = @[instruction];
- videoComposition.frameDuration = CMTimeMake(1, 30);
- 
- AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:composition presetName:AVAssetExportPresetHighestQuality];
- exporter.outputURL = exportURL;
- exporter.outputFileType = AVFileTypeQuickTimeMovie;
- exporter.videoComposition = videoComposition;
- 
- [exporter exportAsynchronouslyWithCompletionHandler:^{
- 
- }];
- */
-        
-        
-        // Set up a video composition to apply the filter.
-//        let composition = AVMutableVideoComposition(
-//            asset: avAsset,
-//            applyingCIFiltersWithHandler: { request in
-//                let filtered = request.sourceImage.applyingFilter(filterName, parameters: [:])
-//                request.finish(with: filtered, context: nil)
-//        })
-
         let clipVideoTrack = avAsset.tracks( withMediaType: AVMediaType.video ).first!
 
         let composition = AVMutableComposition()
@@ -579,116 +512,15 @@ class AssetViewController: UIViewController {
             NSLog(error.localizedDescription)
         }
         
-        
-//        let videoComposition = AVMutableVideoComposition()
-//        videoComposition.renderSize = CGSize(width: clipVideoTrack.naturalSize.height, height: clipVideoTrack.naturalSize.width)
-//        videoComposition.frameDuration = clipVideoTrack.minFrameDuration
-//
-//        let transformer = AVMutableVideoCompositionLayerInstruction(assetTrack: clipVideoTrack)
-        
-//        let instruction = AVMutableVideoCompositionInstruction()
-//        instruction.timeRange = clipVideoTrack.timeRange
-        
         let rotation = rotationForTrack(videoTrack: clipVideoTrack)
         let newRotation = next(rotation: rotation)
         let newTransform = transformFor( rotation: newRotation, videoSize: clipVideoTrack.naturalSize)
         
-        
-//        transformer.setTransform(transform, at: CMTime.zero)
-        
-//        instruction.layerInstructions = [transformer]
-//        videoComposition.instructions = [instruction]
-        
-        
-        //
-
         mutableTrack.preferredTransform = newTransform
-
-    
-
-        /*
-         
-         
-         let videoComposition = AVMutableVideoComposition()
-         videoComposition.renderSize = CGSize(width: clipVideoTrack.naturalSize.height, height: clipVideoTrack.naturalSize.width)
-         videoComposition.frameDuration = CMTimeMake(1, 30)
-         
-         let transformer = AVMutableVideoCompositionLayerInstruction(assetTrack: clipVideoTrack)
-         
-         let instruction = AVMutableVideoCompositionInstruction()
-         instruction.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(60, 30))
-         var transform:CGAffineTransform = CGAffineTransform(scaleX: -1.0, y: 1.0)
-         transform = transform.translatedBy(x: -clipVideoTrack.naturalSize.width, y: 0.0)
-         transform = transform.rotated(by: CGFloat(Double.pi/2))
-         transform = transform.translatedBy(x: 0.0, y: -clipVideoTrack.naturalSize.width)
-         
-         transformer.setTransform(transform, at: kCMTimeZero)
-         
-         instruction.layerInstructions = [transformer]
-         videoComposition.instructions = [instruction]
-         
-         // Export
-         
-         let exportSession = AVAssetExportSession(asset: videoAsset, presetName: AVAssetExportPreset640x480)!
-         let fileName = UniqueIDGenerator.generate().appending(".mp4")
-         let filePath = documentsURL.appendingPathComponent(fileName)
-         let croppedOutputFileUrl = filePath
-         exportSession.outputURL = croppedOutputFileUrl
-         
-         
-         
-         
-        // Grab the source track from AVURLAsset for example.
-        let assetVideoTrack = avAsset.tracks(withMediaType: .video)[0]
-        
-        // Grab the composition video track from AVMutableComposition you already made.
-        let compositionVideoTrack = composition.tracks// .tracks(withMediaType: .video)[0]
- 
-        */
-    
-        
-        // Apply the original transform.
-//        if (assetVideoTrack && compositionVideoTrack) {
-//            compositionVideoTrack.preferredTransform = assetVideoTrack.preferredTransform
-//        }
-
-//        for track in avAsset.tracks {
-//            if track.mediaType == AVMediaType.video {
-//                // rotate
-//            }
-//
-//        }
-
-        
-        /*
- // Insert the video and audio tracks from AVAsset
- if (assetVideoTrack != nil) {
- AVMutableCompositionTrack *compositionVideoTrack = [mutableComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
- [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, [asset duration]) ofTrack:assetVideoTrack atTime:insertionPoint error:&error];
- 
- }
- if (assetAudioTrack != nil) {
- AVMutableCompositionTrack *compositionAudioTrack = [mutableComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
- [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, [asset duration]) ofTrack:assetAudioTrack atTime:insertionPoint error:&error];
- }*/
-        
-        
-//        let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video)[0]
-//        let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: videoTrack);
-//        let rotationTransform = CGAffineTransform.init(rotationAngle: .pi / 2 );
-//        layerInstruction.setTransform(rotationTransform, at: CMTime.zero)
-//
-//
-//        let mainInstruction = AVMutableVideoCompositionInstruction()
-//        mainInstruction.timeRange = videoTrack.timeRange
-//        mainInstruction.layerInstructions = [layerInstruction]
-//        composition.instructions = [mainInstruction]
-        
         
         // Export the video composition to the output URL.
         guard let export = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetPassthrough/*AVAssetExportPresetHighestQuality*/)
             else { fatalError("Can't configure the AVAssetExportSession.") }
-//        export.video
         export.outputFileType = AVFileType.mov
         export.outputURL = output.renderedContentURL
         //export.videoComposition = videoComposition

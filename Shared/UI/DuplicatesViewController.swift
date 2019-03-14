@@ -11,6 +11,13 @@ import Photos
 import ReSwift
 import DeepDiff
 
+extension UICollectionView {
+    func indexPathsForElements(in rect: CGRect) -> [IndexPath] {
+        let allLayoutAttributes = collectionViewLayout.layoutAttributesForElements(in: rect)!
+        return allLayoutAttributes.filter({ $0.representedElementCategory == .cell }).map { $0.indexPath }
+    }
+}
+
 class DuplicatesViewController: UIViewController, StoreSubscriber {
 
     @IBOutlet weak var collectionView: UICollectionView!
@@ -65,17 +72,7 @@ class DuplicatesViewController: UIViewController, StoreSubscriber {
         let headerNib = UINib(nibName: "DuplicatesSectionHeaderView", bundle: nil)
         collectionView.register(headerNib, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "DuplicatesSectionHeaderView")
         
-        //collectionView.register(TranscodeSectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "TranscodeSectionHeaderView")
-
-        // Give a bottom inset because the bottom section is overlapping the collectionView content.
-        // Warning: Fragile magic number
-        //collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 102, right: 0)
-        
         collectionViewLayout.sectionHeadersPinToVisibleBounds = true
-        
-        //newState(state: mainStore.state)
-        
-        //pulsateBackgroundColor(view: applyButton)
         
         collectionViewLayout.headerReferenceSize = CGSize(width: self.collectionView.frame.size.width, height: 100)
     }
@@ -90,9 +87,6 @@ class DuplicatesViewController: UIViewController, StoreSubscriber {
 
         // Update once but don't subscribe.  We don't want to be updating while the transition is in progress.
         newState(state: mainStore.state)
-        
-//        let blue = UIColor(red: 34.0/255, green: 103.0/255, blue: 255.0/255, alpha: 1)
-//        self.navigationController?.toolbar.barTintColor = blue
     }
     
     
@@ -198,9 +192,6 @@ class DuplicatesViewController: UIViewController, StoreSubscriber {
         let lightBlue = UIColor(red: 68.0/255, green: 206.0/255, blue: 255.0/255, alpha: 1)
 
         let button = UIButton(type: .custom)
-        //let text = gridDataSource.buttonLabelText(state)
-        //button.setTitle("aa", for: .normal)
-        
         button.setTitleColor(lightBlue, for: .highlighted)
         button.titleLabel?.numberOfLines = 0
         button.titleLabel?.textAlignment = .center
@@ -222,33 +213,6 @@ class DuplicatesViewController: UIViewController, StoreSubscriber {
         label.font = .preferredFont(forTextStyle: UIFont.TextStyle.caption1)
         return label
     }
-
-    /*
-    func darkerColorForColor(color: UIColor) -> UIColor {
-        
-        var r:CGFloat = 0, g:CGFloat = 0, b:CGFloat = 0, a:CGFloat = 0
-        
-        if color.getRed(&r, green: &g, blue: &b, alpha: &a){
-            return UIColor(red: max(r - 0.2, 0.0), green: max(g - 0.2, 0.0), blue: max(b - 0.2, 0.0), alpha: a)
-        }
-        
-        return UIColor()
-    }
-    
-    func pulsateBackgroundColor(view: UIView) {
-        let originalColor = view.backgroundColor!
-        let darkenedColor = darkerColorForColor(color: originalColor)
-        
-        UIView.animateKeyframes(withDuration: 2, delay: 0, options: [.autoreverse, .repeat], animations: {
-            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5, animations: {
-                view.layer.backgroundColor = darkenedColor.cgColor
-            })
-            UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5, animations: {
-                view.layer.backgroundColor = originalColor.cgColor
-            })
-        }, completion: nil)
-    }
-     */
     
     static func numberOfColsFrom(width: CGFloat, forceEvenColumnCount: Bool) -> Int {
         let iPhone6PointsWidth = CGFloat(375)
@@ -488,10 +452,6 @@ extension DuplicatesViewController: UICollectionViewDelegateFlowLayout {
         case .instructions:
             // Hacky.  Measure size that fits and return that.  It would be better for cells to be self-sized, but this
             // is complicated and error-prone.
-//            let cell = self.collectionView(collectionView, cellForItemAt: indexPath)
-//            let width = collectionView.bounds.width - collectionView.contentInset.left - collectionView.contentInset.right
-//            let fittedSize = cell.sizeThatFits(CGSize(width: width, height: CGFloat.greatestFiniteMagnitude))
-//            return fittedSize
             let width = collectionView.bounds.width - collectionView.contentInset.left - collectionView.contentInset.right
             return CGSize(width: width, height: 100)
         case .asset:

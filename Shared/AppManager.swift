@@ -143,9 +143,6 @@ class AppManager {
         }
     }
     private func fetchPreferences() {
-//        if let savings = SavingsFilePersistence.read() {
-//            self.internalDispatch(SetSavings(savings: savings))
-//        }
         let preferences = Preferences.Persistence.instance.read()
         self.internalDispatch(AppAction.setPreferences(preferences))
     }

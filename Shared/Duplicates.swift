@@ -102,20 +102,19 @@ class Duplicates {
     struct State {
         var photosExact: Groups
         var videosExact: Groups
-        var photosInexact: Groups
         var videosInexact: Groups
 
         var badgeCount: Int {
-            return [photosExact, videosExact, photosInexact, videosInexact].reduce(0, { $0 + $1.numAssetsToDelete })
+            return [photosExact, videosExact, videosInexact].reduce(0, { $0 + $1.numAssetsToDelete })
         }
         var briefStatus: BriefStatus {
-            return [photosExact, videosExact, photosInexact, videosInexact].reduce(BriefStatus.empty(), { (result, duplicateGroups) -> BriefStatus in
+            return [photosExact, videosExact, videosInexact].reduce(BriefStatus.empty(), { (result, duplicateGroups) -> BriefStatus in
                 return result + duplicateGroups.briefStatus
             })
         }
 
         static func empty() -> State {
-            return State(photosExact: .empty(), videosExact: .empty(), photosInexact: .empty(), videosInexact: .empty())
+            return State(photosExact: .empty(), videosExact: .empty(), videosInexact: .empty())
         }
     }
 
@@ -132,8 +131,6 @@ class Duplicates {
         }
 
         DispatchQueue.global().async {
-            // Prioritize scanning videos over photos because they are much larger and will find savings earlier.
-
             let videoAssets = FetchAssets.manager.fetch(with: .video)
             let videoExactMatches = findExactMatches(assets: videoAssets) { duplicateGroups in
                 queue.sync {
@@ -155,14 +152,6 @@ class Duplicates {
                 }
                 emitProgress()
             }
-            
-            // disable for now
-//            findInexactMatches(assets: photoAssets, exactMatchDuplicateGroups: photoExactMatches) { duplicateGroups in
-//                queue.sync {
-//                    state.photosInexact = duplicateGroups
-//                }
-//                emitProgress()
-//            }
         }
     }
     
@@ -176,42 +165,10 @@ class Duplicates {
         let duplicateGroups = FindDuplicatesUsingMetadata.filterToDupes(assets: remainingAssets, matchMode: .createDateAndDurationAndAspectRatio, progress: progress)
 
         let duplicateGroups2a = refine(groups: duplicateGroups) { (assets) -> Duplicates.Groups in
-//            if assets.count > 2 {
-//                NSLog("foo")
-//            }
             return FindDuplicatesUsingThumbnail.filterToDupes(assets: assets, strictness: .similar)
         }
 
-//        let dupeAssets = exactMatchDuplicateGroups.groups.flatMap({ [$0.toKeep] + $0.toDelete })
-//        let dupes = FindDuplicatesUsingThumbnail.filterToDupes(assets: dupeAssets)
-//        let dupeAssets2 = dupes.groups.flatMap { (group) -> [PHAsset] in
-//            return group.allAssets
-//        }
-//        let difference = Set(dupeAssets).subtracting(dupeAssets2)
-//        let differenceGrouped = FindDuplicatesUsingMetadata.filterToDupes(assets: Array(difference), matchMode: .exactMatchUsingResources)
-//        let differenceGrouped2 = FindDuplicatesUsingThumbnail.filterToDupes(assets: Array(difference))
-//
-//        NSLog("dupeAssets \(dupeAssets.count)")
-//        NSLog("dupes \(dupes.groups.count)")
-//        NSLog("dupeAssets2 \(dupeAssets2.count)")
-//        NSLog("difference \(difference.count)")
-//        NSLog("differenceGrouped \(differenceGrouped.groups.count)")
-//        NSLog("differenceGrouped2 \(differenceGrouped2.groups.count)")
         let groups3 = Groups(isFetching: false, groups: duplicateGroups2a.groups.sorted(by: {$0.toKeep.creationDate! < $1.toKeep.creationDate!}))
-//
-//        let test = FindDuplicatesUsingThumbnail.filterToDupes(assets: groups3.groups[6].allAssets, strictness: .nearIdentical)
-//        let test2 = refine(groups: test) { (assets) -> Duplicates.Groups in
-//            if assets.count > 2 {
-//                NSLog("foo")
-//            }
-//            return FindDuplicatesUsingThumbnail.filterToDupes(assets: assets, strictness: .nearIdentical)
-//        }
-//
-//        if test2.groups.count >= 2 {
-//            let assets3 = test2.groups[0].allAssets
-//            let test3 = FindDuplicatesUsingThumbnail.filterToDupes(assets: assets3, strictness: .nearIdentical)
-//            //.groups.map({$0.allAssets.map({$0.thumbnailSync})})
-//        }
         
         progress(groups3)
     }
@@ -219,42 +176,19 @@ class Duplicates {
     class func refine(groups: Groups, refiner: ([PHAsset]) -> Groups) -> Groups {
         let g = groups.groups.flatMap({ (groups) -> [Group] in
             let g2 = refiner(groups.allAssets).groups
-//            if g2.count != 1 {
-//                NSLog("refined g2 into \(g2.count) groups from groups.allAssets \(groups.allAssets) \(groups.allAssets.map({$0.slow_resourceStats}))" )
-//            }
             return g2
         })
         return Groups(isFetching: false, groups: g)
     }
     
     class func findExactMatches(assets: [PHAsset], progress: @escaping (Groups) -> ()) -> Groups {
-        //let date = Date()
-        
         // Look for exact creationDate matches.  It's one of the fastest criteria we can match on.
         let duplicateGroups = FindDuplicatesUsingMetadata.filterToDupes(assets: assets, matchMode: .exactMatchNotUsingResources)
-
-        //NSLog("duplicates 1 \(date.timeIntervalSinceNow)")
-
-        //let filteredAssets = duplicateGroups.groups.flatMap({$0.allAssets})
-
-        // Look for exact size matches.  This is a little slow to get, but it's OK because we've filtered
-        // down to a smaller set than "everything".
-        //let duplicateGroups2a = FindDuplicatesUsingMetadata.filterToDupes(assets: filteredAssets, matchMode: .exactMatchUsingResources)
 
         let duplicateGroups2b = refine(groups: duplicateGroups) { (assets) -> Duplicates.Groups in
             return FindDuplicatesUsingMetadata.filterToDupes(assets: assets, matchMode: .exactMatchUsingResources)
         }
         
-        //NSLog("duplicates 2 \(date.timeIntervalSinceNow)")
-
-        //let duplicateGroups3a = FindDuplicatesUsingThumbnail.filterToDupes(assets: filteredAssets)
-//        let duplicateGroups3b = refine(groups: duplicateGroups2b) { (assets) -> Duplicates.Groups in
-//            return FindDuplicatesUsingThumbnail.filterToDupes(assets: assets, strictness: .similar)
-//        }
-
-
-        //NSLog("duplicates 3 \(date.timeIntervalSinceNow)")
-
         progress(duplicateGroups2b)
         return duplicateGroups2b
     }

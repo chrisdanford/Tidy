@@ -36,12 +36,10 @@ extension UIViewController {
                     hud.dismiss()
                 case .errorOrCancelled:
                     hud.textLabel.text = "Error or Cancelled"
-                    //  hud.detailTextLabel.text = nil
                     hud.indicatorView = JGProgressHUDErrorIndicatorView()
                     hud.dismiss(afterDelay: 3, animated: true)
                 case .success:
                     hud.textLabel.text = "Success"
-                    //  hud.detailTextLabel.text = nil
                     hud.indicatorView = JGProgressHUDSuccessIndicatorView()
                     hud.dismiss(afterDelay: 3, animated: true)
                 }
@@ -66,11 +64,6 @@ extension UIViewController {
         //        hud.textLabel.text = "Loading"
         hud.show(in: self.view)
         
-        //SVProgressHUD.show()
-//        let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-//        hud.areDefaultMotionEffectsEnabled = false
-//        hud.mode = MBProgressHUDMode.indeterminate
-//        hud.label.text = "Loading";
         return ProgressController(hud: hud)
     }
 }

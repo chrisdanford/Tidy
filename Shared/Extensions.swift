@@ -9,27 +9,6 @@
 import Foundation
 import Photos
 
-extension RandomAccessCollection {
-    // https://stackoverflow.com/a/33674192
-    /// Finds such index N that predicate is true for all elements up to
-    /// but not including the index N, and is false for all elements
-    /// starting with index N.
-    /// Behavior is undefined if there is no such N.
-    func binarySearch(predicate: (Element) -> Bool) -> Index {
-        var low = startIndex
-        var high = endIndex
-        while low != high {
-            let mid = index(low, offsetBy: distance(from: low, to: high)/2)
-            if predicate(self[mid]) {
-                low = index(after: mid)
-            } else {
-                high = mid
-            }
-        }
-        return low
-    }
-}
-
 // https://stackoverflow.com/a/48566887
 extension URL {
     var attributes: [FileAttributeKey : Any]? {
@@ -71,7 +50,6 @@ extension CGSize: Hashable {
     }
 }
 
-//import NextLevelSessionExporter
 // MARK: - Date
 // https://github.com/NextLevel/NextLevel/blob/62197bd12f73cbec87be0272984d8f459a8c56b2/Sources/NextLevel%2BFoundation.swift
 extension Date {
@@ -171,9 +149,6 @@ extension NSAttributedString {
 }
 
 extension UIColor {
-//    convenience init(components: [CGFloat]) {
-//        init(re)
-//    }
     var components: (CGFloat, CGFloat, CGFloat, CGFloat) {
         var r:CGFloat = 0, g:CGFloat = 0, b:CGFloat = 0, a:CGFloat = 0
         self.getRed(&r, green: &g, blue: &b, alpha: &a)
@@ -192,18 +167,4 @@ extension ArraySlice where Element : Any {
         let suffix = self.suffix(from: prefix.count)
         return (prefix, suffix)
     }
-}
-
-extension Error {
-//    var friendlyLocalizedDescription: String {
-//        // PHPhotoLibrary.applyChanges gives us a worthless error that is very unfriendly
-//        // ("The operation couldn’t be completed. (Cocoa error -1.)").
-//        // Transform this error and show something more useful.
-//        
-//        let nsError = self as NSError
-//        if nsError.domain == NSCocoaErrorDomain && nsError.code == -1 {
-//            return "Error or cancelled."
-//        }
-//        return localizedDescription
-//    }
 }

@@ -68,7 +68,7 @@ class PHAssetReplace {
         for (i, asset) in assets.enumerated() {
             sizeBytes += asset.slow_resourceStats.totalResourcesSizeBytes
             if sizeBytes > maxBatchSizeBytes || i == maxBatchCount {
-                return i + 1
+                return min(i, 1)
             }
         }
         return assets.count
@@ -165,8 +165,6 @@ class PHAssetReplace {
             }
         }, completionHandler: { (success, error) in
             if let error2 = error {
-//                if let nsError = error2 as NSError {
-//                }
                 NSLog("failed to perform changes \(error2)")
                 callback(.result(.cancelledOrError(error2)))
             } else {

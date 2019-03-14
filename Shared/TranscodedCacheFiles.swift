@@ -54,8 +54,6 @@ class TranscodedCacheFiles {
                     } catch let error {
                         NSLog("failed to delete file: \(file), error:\(error)")
                     }
-                } else {
-                    //NSLog("keeping file")
                 }
             }
         }

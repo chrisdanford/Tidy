@@ -11,19 +11,6 @@ import ReSwift
 
 class MasterViewController2: UITableViewController, StoreSubscriber {
     
-    // MARK: Types for managing sections, cell, and segue identifiers
-//    enum Section: Int {
-//        case status = 0
-//        case identicalPhotos
-//        case identicalVideos
-//        case lowQuality
-//        case compress
-//        case recentlyDeleted
-//        case savings
-//
-//        static let count = 7
-//    }
-    
     enum CellIdentifier: String {
         case status
         case header
@@ -88,16 +75,12 @@ class MasterViewController2: UITableViewController, StoreSubscriber {
         mainStore.unsubscribe(self)
     }
     
-    /// - Tag: UnregisterChangeObserver
-    deinit {
-        //PHPhotoLibrary.shared().unregisterChangeObserver(self)
-    }
     
-    var throttler: Throttler2? = nil
+    var throttler: Throttler? = nil
     func newState(state: AppState) {
         //var newState = state
         if throttler == nil {
-            throttler = Throttler2.init(maxFrequency: 0.5)  { [weak self] in
+            throttler = Throttler.init(maxFrequency: 0.5)  { [weak self] in
                 DispatchQueue.main.async {
                     self?.applyState(state: mainStore.state)
                 }
@@ -114,7 +97,6 @@ class MasterViewController2: UITableViewController, StoreSubscriber {
             ViewModel.TableSection(header: .header, rows: [
                 .exactPhotos,
                 .exactVideos,
-                // .inexactPhotos,  // Disable for now.  Getting false duplicates
                 .inexactVideos,
                 .upgradeCompression,
                 .largeFiles,
@@ -131,43 +113,7 @@ class MasterViewController2: UITableViewController, StoreSubscriber {
             }
         }
     }
-    
-    // MARK: Segues
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let segueIdentifier = segue.identifier {
-            guard let destination = (segue.destination as? UINavigationController)?.topViewController as? AssetGridViewController
-                else { fatalError("Unexpected view controller for segue.") }
-            guard let cell = sender as? UITableViewCell else { fatalError("Unexpected sender for segue.") }
-            
-            destination.title = cell.textLabel?.text
-            
-            switch SegueIdentifier(rawValue: segueIdentifier)! {
-            case .duplicates: break
-            //destination.fetchResult = allPhotos
-            case .compress: break
-            /*
-                // Fetch the asset collection for the selected row.
-                let indexPath = tableView.indexPath(for: cell)!
-                let collection: PHCollection
-                switch Section(rawValue: indexPath.section)! {
-                case .smartAlbums:
-                    collection = smartAlbums.object(at: indexPath.row)
-                case .userCollections:
-                    collection = userCollections.object(at: indexPath.row)
-                default: return // The default indicates that other segues have already handled the photos section.
-                }
-                
-                // configure the view controller with the asset collection
-                guard let assetCollection = collection as? PHAssetCollection
-                    else { fatalError("Expected an asset collection.") }
-                //destination.fetchResult = PHAsset.fetchAssets(in: assetCollection, options: nil)
-                destination.assetCollection = assetCollection
-     */
-            }
-        }
-    }
-    
+        
     // MARK: Table View
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -227,7 +173,7 @@ class MasterViewController2: UITableViewController, StoreSubscriber {
             cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.status.rawValue, for: indexPath)
         case .header:
             fatalError()
-        case .exactPhotos, .exactVideos, .inexactPhotos, .inexactVideos, .upgradeCompression, .clearRecentlyDeleted, .largeFiles:
+        case .exactPhotos, .exactVideos, .inexactVideos, .upgradeCompression, .clearRecentlyDeleted, .largeFiles:
             cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.feature.rawValue, for: indexPath)
         case .about:
             cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.savings.rawValue, for: indexPath)

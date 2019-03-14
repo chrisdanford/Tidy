@@ -9,16 +9,4 @@
 import UIKit
 
 class FeatureTableViewCell: UITableViewCell {
-//    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
-//    @IBOutlet weak var statusLabel: UILabel!
-//    
-//    func unload() {
-//        activityIndicatorView.isHidden = true
-//        statusLabel.text = ""
-//    }
-//    
-//    func set(briefStatus: BriefStatus) {
-//        activityIndicatorView.isHidden = !briefStatus.isScanning
-//        statusLabel.text = briefStatus.readyBytes.formattedCompactByteString
-//    }
 }

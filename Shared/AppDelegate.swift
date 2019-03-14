@@ -24,7 +24,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         guard let navigationController = splitViewController.viewControllers.last as? UINavigationController else {
             return true
         }
-        //navigationController.topViewController!.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem
         #endif
         splitViewController.delegate = self
 
@@ -99,40 +98,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     
     func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController,
                              onto primaryViewController: UIViewController) -> Bool {
-//        guard let secondaryAsNavController = secondaryViewController as? UINavigationController else {
-//            return true
-//        }
-//        guard let topAsDetailController = secondaryAsNavController.topViewController as? AssetGridViewController else {
-//            return true
-//        }
-//        if topAsDetailController.fetchResult == nil {
-//        }
-
         if let vc = primaryViewController as? MasterViewController2 {
             vc.clearTableViewSelection()
         }
-        
-        // What a mess. Pushing a nested UINavigationController usually supported, but an exception is made in the default behavior
-        // when collapsing the secondary into the primary.
-        // https://www.malhal.com/2017/01/27/default-behaviour-of-uisplitviewcontroller-collapsesecondaryviewcontroller/
-        //
-        // Normalize the behavior here by stripping out UINavigationController that is the secondaryView and pop its content
-        // and push it onto the primary.
-//        let primaryNavigationController = primaryViewController as! UINavigationController
-//        let secondaryNavigationController = secondaryViewController as! UINavigationController
-//        let controllersToPush = secondaryNavigationController.viewControllers
-//        secondaryNavigationController.setViewControllers([], animated: false)
-//        
-//        for controllerToPush in controllersToPush {
-//            controllerToPush.removeFromParent()
-//            primaryNavigationController.pushViewController(controllerToPush, animated: false)
-//        }
-        
-        // Propagate properties the UINavigationController that were probably set by the top ViewController.
-//        primaryNavigationController.isToolbarHidden = secondaryNavigationController.isToolbarHidden
-//        primaryNavigationController.isNavigationBarHidden = secondaryNavigationController.isNavigationBarHidden
-//        primaryNavigationController.setToolbarItems(secondaryNavigationController.toolbarItems, animated: false)
-
         // Return true to indicate that the app has handled the collapse by doing nothing and will discard the secondary controller.
         return false
     }
@@ -169,16 +137,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
             navigationController.setViewControllers(viewControllers, animated: false)
             return navigationController
         }
-//
-        let navigationController = wrapInNavigationControllerIfNotAlready(viewControllers: viewControllersToMove ?? [])
-//        if let viewControllersToMove2 = viewControllersToMove {
-//            navigationController.setViewControllers(viewControllersToMove2, animated: false)
 
-            
-            //            secondary.setViewControllers(poppedVCs2, animated: false)
-//        }
+        let navigationController = wrapInNavigationControllerIfNotAlready(viewControllers: viewControllersToMove ?? [])
         return navigationController
-//        return secondary
-//        return nil
     }
 }

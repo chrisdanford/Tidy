@@ -38,23 +38,6 @@ extension AVAsset {
         case success(VideoCodec)
     }
     
-    
-    //        func encode(to encoder: Encoder) throws {
-    //            var container = encoder.container(keyedBy: CodingKeys.self)
-    //            try container.encode(naturalSizeTransformed, forKey: .naturalSizeTransformed)
-    //            try container.encode(durationSeconds, forKey: .durationSeconds)
-    //            try container.encode(estimatedDataRate, forKey: .estimatedDataRate)
-    //            try container.encode(videoCodec, forKey: .videoCodec)
-    //        }
-    //        init(from decoder: Decoder) throws {
-    //            let container = try decoder.container(keyedBy: CodingKeys.self)
-    //            naturalSizeTransformed = try container.decode(CGSize.self, forKey: .naturalSizeTransformed)
-    //            durationSeconds = try container.decode(Float.self, forKey: .durationSeconds)
-    //            estimatedDataRate = try container.decode(Float.self, forKey: .estimatedDataRate)
-    //            videoCodec = try container.decode(VideoCodec.self, forKey: .videoCodec)
-    //        }
-    
-    
     func videoCodec(completion: @escaping (VideoCodecResult) -> ()) {
         // Accessing "tracks" will block.  On iOS, it seems like the download is getting killed
         // if we block on it.  It's documented that iOS should use AVAsynchronousKeyValueLoading

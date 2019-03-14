@@ -48,71 +48,29 @@ class StatusTableViewCell: UITableViewCell {
     }
     
     private func setupPieChart(dataSet: PieChartDataSet) {
-        //NSLog("pieChartView \(pieChartView)")
-
         let chartView = pieChartView!
         
-        //chartView.usePercentValuesEnabled = true
         chartView.drawSlicesUnderHoleEnabled = false
         chartView.holeRadiusPercent = 0.8
         chartView.transparentCircleRadiusPercent = 0.61
         chartView.chartDescription?.enabled = false
         chartView.setExtraOffsets(left: 5, top: 10, right: 5, bottom: 5)
         
-        //chartView.drawCenterTextEnabled = true
-        
         let paragraphStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
         paragraphStyle.lineBreakMode = .byTruncatingTail
         paragraphStyle.alignment = .center
         
-//        let centerText = NSMutableAttributedString(string: "Charts\nby Daniel Cohen Gindi")
-//        centerText.setAttributes([.font : UIFont(name: "HelveticaNeue-Light", size: 13)!,
-//                                  .paragraphStyle : paragraphStyle], range: NSRange(location: 0, length: centerText.length))
-//        centerText.addAttributes([.font : UIFont(name: "HelveticaNeue-Light", size: 11)!,
-//                                  .foregroundColor : UIColor.gray], range: NSRange(location: 10, length: centerText.length - 10))
-//        centerText.addAttributes([.font : UIFont(name: "HelveticaNeue-Light", size: 11)!,
-//                                  .foregroundColor : UIColor(red: 51/255, green: 181/255, blue: 229/255, alpha: 1)], range: NSRange(location: centerText.length - 19, length: 19))
-//        chartView.centerAttributedText = centerText;
-        
-        //chartView.drawHoleEnabled = true
         chartView.rotationAngle = 0
         chartView.rotationEnabled = true
         chartView.highlightPerTapEnabled = true
         
         chartView.legend.enabled = false
-//        let l = chartView.legend
-//        l.horizontalAlignment = .right
-//        l.verticalAlignment = .top
-//        l.orientation = .vertical
-//        l.drawInside = false
-//        l.xEntrySpace = 7
-//        l.yEntrySpace = 0
-//        l.yOffset = 0
-
-        
-//        chartView.delegate = self
-        
-//        let l = chartView.legend
-//        l.horizontalAlignment = .right
-//        l.verticalAlignment = .top
-//        l.orientation = .vertical
-//        l.xEntrySpace = 7
-//        l.yEntrySpace = 0
-//        l.yOffset = 0
-        //        chartView.legend = l
-        
         // entry label styling
         chartView.entryLabelColor = .red
         chartView.entryLabelFont = .systemFont(ofSize: 12, weight: .light)
         
         chartView.holeColor = UIColor(white: 0, alpha: 0)
         
-//        sliderX.value = 4
-//        sliderY.value = 100
-//        self.slidersValueChanged(nil)
-//
-
-
         self.setDataCount(set: dataSet)
     }
     
@@ -131,13 +89,6 @@ class StatusTableViewCell: UITableViewCell {
         
         let data = PieChartData(dataSet: set)
         
-//        let pFormatter = NumberFormatter()
-//        pFormatter.numberStyle = .percent
-//        pFormatter.maximumFractionDigits = 1
-//        pFormatter.multiplier = 1
-//        pFormatter.percentSymbol = " %"
-//        data.setValueFormatter(DefaultValueFormatter(formatter: pFormatter))
-
         class Formatter : IValueFormatter {
             func stringForValue(_ value: Double,
                                 entry: ChartDataEntry,

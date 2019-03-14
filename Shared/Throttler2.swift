@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class Throttler2 {
+public class Throttler {
     private let maxFrequency: TimeInterval
     private let block: () -> ()
 
@@ -37,24 +37,13 @@ public class Throttler2 {
                     }
                 }
             }
-                
-//            }
-//            self.job = job
-            //NSLog("timeSincelastExecutionFinished \(timeSincelastExecutionFinished), delay \(delay)")
         }
     }
 }
 
 func throttle(maxFrequency: TimeInterval, block: @escaping () -> Void) -> () -> Void {
-    let throttler = Throttler2(maxFrequency: maxFrequency, block: block)
+    let throttler = Throttler(maxFrequency: maxFrequency, block: block)
     return {
         throttler.executeThrottled()
     }
 }
-//
-//private extension Date {
-//    static func second(from referenceDate: Date) -> Int {
-//        return Int(Date().timeIntervalSince(referenceDate).rounded())
-//    }
-//}
-

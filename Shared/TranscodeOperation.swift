@@ -11,11 +11,6 @@ import Photos
 class TranscodeOperation : Operation {
     let asset: PHAsset
     let isNetworkAccessAllowed: Bool
-//    let isPhotoKitAllowed: Bool
-//    let isNetworkAccessAllowed: Bool
-//    let allowTranscode: Bool
-//    var assetStatsAndTranscode: Transcode.AssetStatsAndTranscode?
-//    var workItem: Transcode.WorkItem?
     var progressBlock: (Progress) -> () = {progress in }
     let cancellationTokenSource = CancellationTokenSource()
     var videoCodecResult : AVAsset.VideoCodecResult?
@@ -31,7 +26,6 @@ class TranscodeOperation : Operation {
     init(asset: PHAsset, isNetworkAccessAllowed: Bool) {
         self.asset = asset
         self.isNetworkAccessAllowed = isNetworkAccessAllowed
-//        self.allowTranscode = allowTranscode
     }
 
     override func cancel() {

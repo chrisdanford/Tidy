@@ -68,54 +68,11 @@ public class Storage {
     static func retrieve<T: Decodable>(_ fileName: String, from directory: Directory, as type: T.Type) throws -> T {
         let url = getURL(for: directory).appendingPathComponent(fileName, isDirectory: false)
         
-//        if !FileManager.default.fileExists(atPath: url.path) {
-//            fatalError("File at path \(url.path) does not exist!")
-//        }
-        
         guard let data = FileManager.default.contents(atPath: url.path) else {
             throw StorageError.cantReadFileContents
         }
             let decoder = JSONDecoder()
-            //do {
-                let model = try decoder.decode(type, from: data)
-                return model
-            //} catch {
-                //fatalError(error.localizedDescription)
-            //}
-        //} else {
-//            fatalError("No data at \(url.path)!")
-//        }
-//        throw Error(1)
+            let model = try decoder.decode(type, from: data)
+            return model
     }
-    
-    /// Remove all files at specified directory
-//    static func clear(_ directory: Directory) {
-//        let url = getURL(for: directory)
-//        do {
-//            let contents = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
-//            for fileUrl in contents {
-//                try FileManager.default.removeItem(at: fileUrl)
-//            }
-//        } catch {
-//            fatalError(error.localizedDescription)
-//        }
-//    }
-    
-    /// Remove specified file from specified directory
-//    static func remove(_ fileName: String, from directory: Directory) {
-//        let url = getURL(for: directory).appendingPathComponent(fileName, isDirectory: false)
-//        if FileManager.default.fileExists(atPath: url.path) {
-//            do {
-//                try FileManager.default.removeItem(at: url)
-//            } catch {
-//                fatalError(error.localizedDescription)
-//            }
-//        }
-//    }
-    
-    /// Returns BOOL indicating whether file exists at specified directory with specified file name
-//    static func fileExists(_ fileName: String, in directory: Directory) -> Bool {
-//        let url = getURL(for: directory).appendingPathComponent(fileName, isDirectory: false)
-//        return FileManager.default.fileExists(atPath: url.path)
-//    }
 }

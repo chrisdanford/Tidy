@@ -9,59 +9,6 @@
 import Photos
 
 extension PHAsset {
-    /*
-    enum FetchVideoCodecResult: Codable {
-        case error
-        case failureNeedsPhotoKit
-        case failureNeedsNetwork
-        case success(AVAsset.AssetStatsResult)
-        
-        enum CodingKeys: CodingKey {
-            case error
-            case failureNeedsPhotoKit
-            case failureNeedsNetwork
-            case success
-        }
-        
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.container(keyedBy: CodingKeys.self)
-            switch self {
-            case .error:
-                try container.encode(0, forKey: .error)
-            case .failureNeedsPhotoKit:
-                try container.encode(0, forKey: .failureNeedsPhotoKit)
-            case .failureNeedsNetwork:
-                try container.encode(0, forKey: .failureNeedsNetwork)
-            case .success(let value):
-                try container.encode(value, forKey: .success)
-            }
-        }
-        
-        init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            if let _ = try? container.decode(Int.self, forKey: .error) {
-                self = .error
-            } else if let _ = try? container.decode(Int.self, forKey: .failureNeedsPhotoKit) {
-                self = .failureNeedsPhotoKit
-            } else if let _ = try? container.decode(Int.self, forKey: .failureNeedsNetwork) {
-                self = .failureNeedsNetwork
-            } else if let value = try? container.decode(AVAsset.AssetStatsResult.self, forKey: .success) {
-                self = .success(value)
-            } else {
-                self = .error
-            }
-            //                do {
-            //                    let _ = try container.decode(Int.self, forKey: .failureNeedsNetwork)
-            //                    self = .failureNeedsNetwork
-            //                } catch {
-            //                    let value = try container.decode(AssetStatsResult.self, forKey: .success)
-            //                    self = .success(value)
-            //                }
-            //            }
-        }
-    }
- */
-
     func slow_isTranscodableOrErrorFetchingSync(cancellationToken: CancellationToken, isNetworkAccessAllowed: Bool) -> Bool {
         let result = slow_videoCodecSync(cancellationToken: cancellationToken, isNetworkAccessAllowed: isNetworkAccessAllowed)
         switch result {
@@ -104,9 +51,7 @@ extension PHAsset {
     private func videoCodecSyncInternal(cancellationToken: CancellationToken, isNetworkAccessAllowed: Bool) -> AVAsset.VideoCodecResult {
         var result: AVAsset.VideoCodecResult?
         let semaphore = DispatchSemaphore(value: 0)
-        //NSLog("statsSync start \(self.localIdentifier)")
         self.videoCodecAsync(cancellationToken: cancellationToken, isNetworkAccessAllowed: isNetworkAccessAllowed) { (fetchAssetStatsResult) in
-            //NSLog("statsSync end \(self.localIdentifier)")
             result = fetchAssetStatsResult
             semaphore.signal()
         }
@@ -158,7 +103,6 @@ extension PHAsset {
                     default:
                         NSLog("failure error")
                         completion(.error)
-                        // Handle all other cases
                         return
                     }
                 }

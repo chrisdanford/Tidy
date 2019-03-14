@@ -51,17 +51,6 @@ class AssetGridView: UIView {
             let totalBytes = assetModel.totalResourcesSizeBytes
             return verbose ? totalBytes.formattedDecimalString : totalBytes.formattedCompactByteString
         }
-        
-//        public func hash(into hasher: inout Hasher) {
-//            hasher.combine(assetModel)
-//            hasher.combine(showDeleteIcon)
-//            hasher.combine(showVerboseSizeBytes)
-//            hasher.combine(showModifiedDate)
-//        }
-//        static func == (lhs: Cell, rhs: Cell) -> Bool {
-//            return
-//        }
-
     }
     
     @IBOutlet var contentView: UIView!
@@ -170,7 +159,6 @@ class AssetGridView: UIView {
             imageView.layer.borderWidth = 0
         }
 
-        
         if model.showSavingsPercentage, let savingsPercentage = model.assetModel.transcodeSavingsPercentage {
             let canBeApplied = model.assetModel.transcodeCanBeApplied ?? false
             savingsLabel.text = "Saves " + String(format: "%.1f%%", savingsPercentage * 100)
@@ -194,7 +182,6 @@ class AssetGridView: UIView {
                 savingsLabel.isHidden = false
             }
         }
-
     }
     
     func unload() {

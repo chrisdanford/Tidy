@@ -106,40 +106,6 @@ extension Transcode {
         DispatchQueue.global().async {
             roughEstimate()
         }
-
-//            func detailedEstimate() {
-//                let rawAssets = FetchAssets.manager.fetch(with: .video)
-//
-//                let assets = filterOutHighFrameRate(assets: rawAssets)
-//
-//                // Binary search to find the first video that's AVC1.  The theory is that
-//                // the user's videos will all be AVC1 until a moment where they began using HEVC.
-//                let firstUntranscodableIndex = assets.binarySearch(predicate: { (asset) -> Bool in
-//                    if cancellationToken.isCancelling {
-//                        return false
-//                    }
-//                    return asset.slow_isTranscodableOrErrorFetchingSync(isNetworkAccessAllowed: true)
-//                })
-//                var state = State.empty()
-//                let transcodableAssets = assets.prefix(upTo: firstUntranscodableIndex)
-//
-//                // for the purpose of estimating size, we want to shuffle and try to have a uniform distribution of sizes
-//                var sumBytes: UInt64 = 0
-//                var i = 0
-//
-//                let shuffledTranscodableAssets = transcodableAssets.shuffled()
-//                for asset in shuffledTranscodableAssets {
-//                    i += 1
-//                    let sizeBytes = asset.slow_resourceStats.totalResourcesSizeBytes
-//                    let estimatedSavingsBytes = UInt64(Float(sizeBytes) * estimatedSavingsFromTranscodingAVC1toHEVC)
-//                    sumBytes += estimatedSavingsBytes
-//
-//                    state.briefStatus.readyBytes = UInt64(SizeUtil.estimateSum(partialSum: Float(sumBytes), numSamplesProcessed: i, totalSamples: shuffledTranscodableAssets.count, totalElements: shuffledTranscodableAssets.count))
-//                    emitProgressThrottled(state)
-//                }
-//                emitProgressThrottled(state)
-//            }
-//            detailedEstimate()
             
         func transcode() {
             let assets = filterOutHighFrameRate(assets: FetchAssets.manager.fetch(with: .video))

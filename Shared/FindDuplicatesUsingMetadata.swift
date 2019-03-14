@@ -123,18 +123,6 @@ class FindDuplicatesUsingMetadata {
         }
         emitProgressThrottled()
 
-//        let meat = assets.filter { (asset) -> Bool in
-//            return asset.slow_resourceStats.originalFileName == "IMG_7002.mp4" || asset.slow_resourceStats.originalFileName == "IMG_7002.MOV"
-//        }
-//        let meatInfo = meat.map { AssetIdentifyingInfo.from(asset: $0, canUseResources: true) }
-        
-//        let filteredAssetGroups2 = filteredAssetGroups.filter { (assets) -> Bool in
-//            let first = assets[0]
-//            let rest = assets.suffix(from: 1)
-//            let restMatchesFirst = rest.map{ first.creationDate!.compare($0.creationDate!) == .orderedSame }
-//            let anyDontMatchFirst = restMatchesFirst.reduce(true, { $0 && !$1 })
-//            return anyDontMatchFirst
-//        }
         return calculateResult()
     }
 }

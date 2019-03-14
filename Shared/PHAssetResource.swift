@@ -21,12 +21,18 @@ extension PHAsset {
     
     var slow_resourceStats: ResourceStats {
         let key = localIdentifier
+
+        // Only allow one call to be processed at a time.  Otherwise, our file size estimation tends to make
+        // two calls for the same asset very close together, and that results in 2 cache missed and 2
+        // requests to the photos framework queuing up (one of which is redundant and wasteful).
         let stats = Caches.resourceStatsCache.get(key: key, computeValue: { computeResourceStats })
+
         return stats!
     }
     
     private var computeResourceStats: ResourceStats {
-        // This fairly slow.  On the order of 1ms.
+        // This fairly slow.  Every call is on the order of 1ms because because
+        // the system must make an XPC call to assetsd.
         let resources = PHAssetResource.assetResources(for: self)
 
         let sumResourceBytes = resources.reduce(UInt64(0)) { (result, assetResource) -> UInt64 in

@@ -34,7 +34,6 @@
 		831A00FB21F0A83300A12921 /* TemporaryFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831A00FA21F0A83300A12921 /* TemporaryFile.swift */; };
 		832194AE221442120062243C /* RecentlyDeleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832194AD221442120062243C /* RecentlyDeleted.swift */; };
 		832800FC220BDA7800BEF85D /* PHAssetReplace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832800FB220BDA7800BEF85D /* PHAssetReplace.swift */; };
-		832800FE220BDECE00BEF85D /* OperationStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832800FD220BDECE00BEF85D /* OperationStats.swift */; };
 		83280100220BE59400BEF85D /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832800FF220BE59400BEF85D /* Storage.swift */; };
 		83410833222E025F00C212CA /* TranscodedCacheFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410832222E025F00C212CA /* TranscodedCacheFiles.swift */; };
 		83410835222E08C400C212CA /* CleanCaches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410834222E08C400C212CA /* CleanCaches.swift */; };
@@ -59,7 +58,6 @@
 		83B5FD7022119DE8008309AB /* DuplicatesDiff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B5FD6F22119DE8008309AB /* DuplicatesDiff.swift */; };
 		83B5FD7422125055008309AB /* StatsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B5FD7322125055008309AB /* StatsTableViewCell.swift */; };
 		83C92AD0222BEA7700897C54 /* PHAssetOriginalQuality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C92ACF222BEA7600897C54 /* PHAssetOriginalQuality.swift */; };
-		83D3DE00221BDC8C008E8FEA /* AssetGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118FE1191CEF0525004F2F51 /* AssetGridViewController.swift */; };
 		83D3DE02221BE4DA008E8FEA /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3DE01221BE4DA008E8FEA /* ViewModel.swift */; };
 		83D3DE04221CEF1F008E8FEA /* FindDuplicatesUsingThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3DE03221CEF1F008E8FEA /* FindDuplicatesUsingThumbnail.swift */; };
 		83D3DE06221CFFAB008E8FEA /* FindDuplicatesUsingMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3DE05221CFFAB008E8FEA /* FindDuplicatesUsingMetadata.swift */; };
@@ -89,7 +87,6 @@
 /* Begin PBXFileReference section */
 		118FE1121CEF0525004F2F51 /* Tidy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tidy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		118FE1151CEF0525004F2F51 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		118FE1191CEF0525004F2F51 /* AssetGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetGridViewController.swift; sourceTree = "<group>"; };
 		118FE11C1CEF0525004F2F51 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		118FE11E1CEF0525004F2F51 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		118FE1211CEF0525004F2F51 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -118,7 +115,6 @@
 		831A00FA21F0A83300A12921 /* TemporaryFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryFile.swift; sourceTree = "<group>"; };
 		832194AD221442120062243C /* RecentlyDeleted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyDeleted.swift; sourceTree = "<group>"; };
 		832800FB220BDA7800BEF85D /* PHAssetReplace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHAssetReplace.swift; sourceTree = "<group>"; };
-		832800FD220BDECE00BEF85D /* OperationStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationStats.swift; sourceTree = "<group>"; };
 		832800FF220BE59400BEF85D /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		83410832222E025F00C212CA /* TranscodedCacheFiles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscodedCacheFiles.swift; sourceTree = "<group>"; };
 		83410834222E08C400C212CA /* CleanCaches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanCaches.swift; sourceTree = "<group>"; };
@@ -230,7 +226,6 @@
 				83D3DE03221CEF1F008E8FEA /* FindDuplicatesUsingThumbnail.swift */,
 				83E60DC022065DFC0057CA78 /* Limiter.swift */,
 				8318DC28222CE4FE00775035 /* Notifications.swift */,
-				832800FD220BDECE00BEF85D /* OperationStats.swift */,
 				83C92ACF222BEA7600897C54 /* PHAssetOriginalQuality.swift */,
 				832800FB220BDA7800BEF85D /* PHAssetReplace.swift */,
 				830D6A18220D10C900480C31 /* PHAssetResource.swift */,
@@ -294,7 +289,6 @@
 				83061641221A680500631EA2 /* ActivityAndBadge.swift */,
 				83193AE0220EE1B600A63215 /* AssetGridCell.swift */,
 				83B30486220E9DEE00F95B37 /* AssetGridView.swift */,
-				118FE1191CEF0525004F2F51 /* AssetGridViewController.swift */,
 				11E1BB9D1CF137450057E18F /* AssetViewController.swift */,
 				83410836222EB52F00C212CA /* DuplicatesSectionHeaderView.swift */,
 				83B30482220E739100F95B37 /* DuplicatesViewController.swift */,
@@ -492,10 +486,8 @@
 				837A99BB2218D91A002B4996 /* About.swift in Sources */,
 				83193AE3220EFEC300A63215 /* InstructionsCell.swift in Sources */,
 				83912FF12233B44F004E08A2 /* StoreUtil.swift in Sources */,
-				83D3DE00221BDC8C008E8FEA /* AssetGridViewController.swift in Sources */,
 				83B5FD7422125055008309AB /* StatsTableViewCell.swift in Sources */,
 				830F84AC222FC96B0025B366 /* ProgressHUD.swift in Sources */,
-				832800FE220BDECE00BEF85D /* OperationStats.swift in Sources */,
 				83D3DE04221CEF1F008E8FEA /* FindDuplicatesUsingThumbnail.swift in Sources */,
 				83D3DE08221E303C008E8FEA /* TranscodeSectionHeaderView.swift in Sources */,
 				836E768421F9B9CA0084FF3A /* TranscodeOperation.swift in Sources */,

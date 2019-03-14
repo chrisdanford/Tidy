@@ -28,7 +28,6 @@ class TranscodeManager {
     struct BeingWorkedOn {
         var asset: PHAsset
         var operationProgress: TranscodeOperation.Progress
-        //var transcodeOperation: TranscodeOperation
     }
         
     enum ScanningStatus {
@@ -69,17 +68,13 @@ class TranscodeManager {
         var beingWorkedOn: [BeingWorkedOn]
         var scanningStatus: ScanningStatus
     }
-//    static let manager = TranscodeManager()
     
     let queue = DispatchQueue(label: "TranscodeManager")
-    //var assetsToCheckWithoutNetwork = ArraySlice<PHAsset>()
     var assetsToCheckReversePriority = Array<PHAsset>()
-    //let operationQueueNetworkNotAllowed = OperationQueue()
     let operationQueue = OperationQueue()
     var state = State(isDone: false, processedCount: 0, totalCount: 0, transcoded: [], beingWorkedOn: [], scanningStatus: .starting)
     let progress: (State) -> ()
     var throttledEmitProgress: () -> Void
-//    var backgroundTaskID: UIBackgroundTaskIdentifier
     let cancellationTokenSource = CancellationTokenSource()
     var lastTranscodeAllowedStatus: TranscodingAllowed.Status?
 
@@ -90,7 +85,6 @@ class TranscodeManager {
 
         //self.assets = assets
         self.progress = progress
-//        self.backgroundTaskID = .invalid
 
         throttledEmitProgress = {}
         throttledEmitProgress = throttle(maxFrequency: 0.5) { [weak self] in
@@ -134,9 +128,6 @@ class TranscodeManager {
         queue.async {
             // Only allow progress in the operationQueueNetworkAllowed queue
             // If TranscodingAllowed says we're allowed to proceed
-            
-            //let beingWorkedOnAssets = self.state.beingWorkedOn.map { $0.asset }
-            
             self.lastTranscodeAllowedStatus = status
             let isSuspended = self.lastTranscodeAllowedStatus != .allowed
             self.operationQueue.isSuspended = isSuspended
@@ -182,28 +173,6 @@ class TranscodeManager {
         throttledEmitProgress()
     }
     
-//    deinit {
-//        cancelAll()
-//    }
-    
-//    func start() {
-    
-        
-//        self.backgroundTaskID = UIApplication.shared.beginBackgroundTask(withName: "TranscodeManager", expirationHandler: {
-//            // End the task if time expires.
-//            self.endBackgroundTask()
-//        })
-
-//        fillWithWork()
-//    }
-
-//    private func endBackgroundTask() {
-//        queue.async {
-//            UIApplication.shared.endBackgroundTask(self.backgroundTaskID)
-//            self.backgroundTaskID = .invalid
-//        }
-//    }
-
     private func emitProgress() {
         queue.async {
             let scanningStatus: ScanningStatus
@@ -263,11 +232,6 @@ class TranscodeManager {
     }
     
     func cancelAll() {
-//        queue.async {
-//            for beingWorkedOn in state.beingWorkedOn {
-//                beingWorkedOn.cancellationTokenSource.cancel()
-//            }
-//        }
         cancellationTokenSource.cancel()
         operationQueue.cancelAllOperations()
         emitProgress()

@@ -106,20 +106,12 @@ class TranscodingAllowed {
         assert(Thread.isMainThread)
         
         if didStatusChange() {
-//            let vc = UIAlertController(title: "power", message: "\(UIDevice.current.batteryState.rawValue) \(allowed)", preferredStyle: .actionSheet)
-//            vc.addAction(.init(title: "cancel", style: .cancel, handler: nil))
-//            UIApplication.shared.keyWindow?.rootViewController?.present(vc, animated: false, completion: nil)
-
             NotificationCenter.default.post(name: .transcodingAllowedChanged, object: nil)
         }
     }
 
     @objc private func batteryStateDidChange(_ notification: Notification) {
         assert(Thread.isMainThread)
-//        let vc = UIAlertController(title: "power", message: "\(UIDevice.current.batteryState.rawValue)", preferredStyle: .actionSheet)
-//        vc.addAction(.init(title: "cancel", style: .cancel, handler: nil))
-//        UIApplication.shared.keyWindow?.rootViewController?.present(vc, animated: false, completion: nil)
-
         self.evaluateAndEmit()
     }
 
