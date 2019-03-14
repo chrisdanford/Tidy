@@ -9,16 +9,8 @@ target 'Tidy iOS' do
   pod 'DeepDiff', '1.4.0'
   pod 'Charts', '3.2.1'
   pod 'ReSwift', '4.0.1'
-  pod 'CocoaImageHashing', '1.6.1'
+  pod 'CocoaImageHashing', :git => 'https://github.com/chrisdanford/cocoaimagehashing.git', :commit => 'd0d1c02bba48d66a5037d65e86eaa1a2e66fe603'
   pod 'ReachabilitySwift', '4.3.0'
   pod 'JGProgressHUD', '2.0.3'
-end
-
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    target.build_configurations.each do |config|
-      target.build_settings(config.name)['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
-    end
-  end
 end
 
