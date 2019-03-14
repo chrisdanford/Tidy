@@ -1,14 +1,17 @@
 
 
 # TIDY Video and Photo
-> Keep your photo library nice and clean.
+> An iOS app to keep your photo library nice and clean.
 
 ## Features
+Using TIDY, you can recover massive amounts of device and iCloud space.  It's 100% free and open-source, so get started today!
 
-- Find duplicate photos and videos
-- Find near-duplicate videos
-- Upgrade the compression of videos to "High Efficiency", saving you valuable iCloud storage and device storage space
-- Clear "Recently Deleted" to reclaim iCloud storage space immediately. 
+✨ Features ✨
+➡ Find and delete duplicate photos and videos.
+➡ Find and delete lower-quality resized videos.
+➡ Reduce the size of videos by 40% while maintaining quality by upgrading to "High Efficiency" video compression.
+➡ View videos sorted by size and delete large videos that are no longer needed.
+➡ Clear "Recently Deleted" to reclaim iCloud storage space immediately.
 
 ![](header.png)
 
