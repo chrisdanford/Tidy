@@ -46,14 +46,18 @@ class Cache<K, V: Codable> where K : Hashable, K: Codable {
     }
     
     private func dataFromDisk() -> [K: V]? {
-        guard let data = NSKeyedUnarchiver.unarchiveObject(withFile: file.path) as? Data else { return nil }
-        
         do {
-            let assetStatsAndTranscode = try PropertyListDecoder().decode([K: V].self, from: data)
-            NSLog("Retrieved \(assetStatsAndTranscode.count) items")
-            return assetStatsAndTranscode
+            let rawData = try Data(contentsOf: file)
+            let decoded = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(rawData) as? [K: V]
+            if let dict = decoded {
+                NSLog("Retrieved \(dict.count) items")
+                return dict
+            } else {
+                NSLog("Unarchive failed")
+                return nil
+            }
         } catch {
-            NSLog("Retrieve Failed")
+            NSLog("Read file or unarchive failed")
             return nil
         }
     }
@@ -107,13 +111,15 @@ class Cache<K, V: Codable> where K : Hashable, K: Codable {
         var data: Data? = nil
         queue.sync {
             do {
-                data = try PropertyListEncoder().encode(self.data)
+                data = try NSKeyedArchiver.archivedData(withRootObject: self.data, requiringSecureCoding: false)
             } catch {
                 NSLog("encode Failed")
             }
         }
-        
-        let success = NSKeyedArchiver.archiveRootObject(data!, toFile: file.path)
-        NSLog(success ? "Successful save" : "Save Failed")
+        do {
+            try data?.write(to: file, options: Data.WritingOptions.atomic)
+        } catch {
+            NSLog("Write Failed")
+        }
     }
 }

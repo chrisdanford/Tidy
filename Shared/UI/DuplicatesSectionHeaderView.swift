@@ -10,8 +10,8 @@ import UIKit
 
 extension UIView {
     func clone() -> UIView {
-        let data = NSKeyedArchiver.archivedData(withRootObject: self)
-        return NSKeyedUnarchiver.unarchiveObject(with: data) as! UIView
+        let data = try! NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: false)
+        return try! NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! UIView
     }
 }
 

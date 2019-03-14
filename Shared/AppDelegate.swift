@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         }
         splitViewController.preferredDisplayMode = .allVisible
         #if os(iOS)
-        guard let navigationController = splitViewController.viewControllers.last as? UINavigationController else {
+        guard let _ = splitViewController.viewControllers.last as? UINavigationController else {
             return true
         }
         #endif

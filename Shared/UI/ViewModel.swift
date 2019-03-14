@@ -302,8 +302,7 @@ class ViewModel {
                     applyActionProgressMessage: "Replacing",
                     primaryButton: {state in
                         let assets = state.transcode.transcodingToApply
-                        let spaceToRecoverBytes = 0
-                        var buttonState = GridDataSource.Button(isEnabled: (assets.count > 0), labelText: "Replace \(assets.count.formattedDecimalString) with Upgrades", spaceToRecoverBytes: state.transcode.briefStatus.readySavingsBytes, applyAction: {state, callback in
+                        let buttonState = GridDataSource.Button(isEnabled: (assets.count > 0), labelText: "Replace \(assets.count.formattedDecimalString) with Upgrades", spaceToRecoverBytes: state.transcode.briefStatus.readySavingsBytes, applyAction: {state, callback in
                             let assetsToReplace = state.transcode.transcodingToApply
                             
                             PHAssetReplace.replaceWithTranscoded(assets: assetsToReplace, callback: { progressOrResult in

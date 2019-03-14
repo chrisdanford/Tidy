@@ -69,9 +69,9 @@ extension PHAsset {
         var emittedResult = false
         
         let requestID = PHImageManager.default().requestAVAsset(forVideo: self, options: options) { (avAsset, avAudioMix, info) in
-            NSLog("got requestAVAsset for \(self.slow_resourceStats.originalFileName) \(self.localIdentifier) in \(date.timeIntervalSinceNow)")
+            NSLog("got requestAVAsset for \(String(describing: self.slow_resourceStats.originalFileName)) \(self.localIdentifier) in \(date.timeIntervalSinceNow)")
             guard let asset = avAsset else {
-                NSLog("no asset with options: \(options), info dict: \(info)")
+                NSLog("no asset with options: \(options), info dict: \(String(describing: info))")
                 callback(.result(.error))
                 return
             }

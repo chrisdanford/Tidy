@@ -9,7 +9,7 @@
 import Photos
 
 class Caches {
-    static let resourceStatsCache = Cache<String, PHAsset.ResourceStats>(filenamePrefix: "resourceStats", currentCacheVersion: 1)
-    static let videoCodecCache = Cache<String, AVAsset.VideoCodec>(filenamePrefix: "videoCodec", currentCacheVersion: 1)
-    static let transcodeStatsCache = Cache<String, AVAsset.TranscodeSuccessStats>(filenamePrefix: "transcodeStats", currentCacheVersion: 2)
+    static let resourceStatsCache = Cache<String, PHAsset.ResourceStats>(filenamePrefix: "resourceStats", currentCacheVersion: 2)
+    static let videoCodecCache = Cache<String, AVAsset.VideoCodec>(filenamePrefix: "videoCodec", currentCacheVersion: 2)
+    static let transcodeStatsCache = Cache<String, AVAsset.TranscodeSuccessStats>(filenamePrefix: "transcodeStats", currentCacheVersion: 3)
 }

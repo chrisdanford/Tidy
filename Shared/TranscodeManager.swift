@@ -211,7 +211,7 @@ class TranscodeManager {
 
     private func onOperationEnded(operation: TranscodeOperation) {
         queue.async {
-            NSLog("TranscodeManager onOperationEnded originalFileName \(operation.asset.slow_resourceStats.originalFileName) operation.transcodeResult \(operation.transcodeResult)")
+            NSLog("TranscodeManager onOperationEnded originalFileName \(String(describing: operation.asset.slow_resourceStats.originalFileName)) operation.transcodeResult \(String(describing: operation.transcodeResult))")
             self.state.beingWorkedOn.removeAll(where: { $0.asset == operation.asset })
             if let transcodeResult = operation.transcodeResult {
                 switch transcodeResult {
