@@ -3,7 +3,12 @@
 # TIDY Video and Photo
 > Keep your photo library nice and clean.
 
-TIDY can find duplicate photos and videos, near-duplicate videos, and upgrade the compression of videos to "High Efficiency", saving you valuable iCloud storage and device storage space.
+## Features
+
+- Find duplicate photos and videos
+- Find near-duplicate videos
+- Upgrade the compression of videos to "High Efficiency", saving you valuable iCloud storage and device storage space
+- Clear "Recently Deleted" to reclaim iCloud storage space immediately. 
 
 ![](header.png)
 
@@ -11,11 +16,6 @@ TIDY can find duplicate photos and videos, near-duplicate videos, and upgrade th
 
 iOS App Store: 
 
-For development:
-
-## Features
-
-- 
 ## Development setup
 
 ```sh
