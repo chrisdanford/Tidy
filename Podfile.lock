@@ -9,29 +9,21 @@ PODS:
   - ReSwift (4.0.1)
 
 DEPENDENCIES:
-  - Charts
-  - CocoaImageHashing (from `https://github.com/ameingast/cocoaimagehashing.git`)
-  - DeepDiff
-  - JGProgressHUD
-  - ReachabilitySwift
-  - ReSwift
+  - Charts (= 3.2.1)
+  - CocoaImageHashing (= 1.6.1)
+  - DeepDiff (= 1.4.0)
+  - JGProgressHUD (= 2.0.3)
+  - ReachabilitySwift (= 4.3.0)
+  - ReSwift (= 4.0.1)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Charts
+    - CocoaImageHashing
     - DeepDiff
     - JGProgressHUD
     - ReachabilitySwift
     - ReSwift
-
-EXTERNAL SOURCES:
-  CocoaImageHashing:
-    :git: https://github.com/ameingast/cocoaimagehashing.git
-
-CHECKOUT OPTIONS:
-  CocoaImageHashing:
-    :commit: 2d9d8e998b9b89ec9e32be2955d4ddfced94dbcd
-    :git: https://github.com/ameingast/cocoaimagehashing.git
 
 SPEC CHECKSUMS:
   Charts: f122fb70b19847fa5817d018b77d6c5a2296ab25
@@ -41,6 +33,6 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
   ReSwift: f4012c613e13da7398827fe5aebdb938eaed40a3
 
-PODFILE CHECKSUM: d080b716fff6a643d66d0c5db086fd48ee0f6830
+PODFILE CHECKSUM: aa69414bdb1914b100e9ca885363f91cb639bb04
 
 COCOAPODS: 1.5.3
