@@ -11,17 +11,18 @@ import CocoaImageHashing
 import Photos
 
 extension PHAsset {
+    // TODO: Use PHCachingImageManager for this so that we fetch in a batch.
     var thumbnailSync: UIImage? {
-        let semaphore = DispatchSemaphore(value: 0)
         var result: UIImage?
         let targetSize = CGSize(width: 300, height: 300)  // The smallest thumbnail possible
         let options = PHImageRequestOptions()
+        options.deliveryMode = .fastFormat
+        options.isSynchronous = true
+        options.isNetworkAccessAllowed = true  // having the thumbnail isn't optional
         PHImageManager.default().requestImage(for: self, targetSize: targetSize, contentMode: .aspectFit, options: options) { (image, info) in
             result = image
-            semaphore.signal()
         }
-        semaphore.wait()
-        return result!
+        return result
     }
 }
 
@@ -34,10 +35,11 @@ class FindDuplicatesUsingThumbnail {
         case closeToIdentical
     }
     private class func findDupes(assets: [PHAsset], strictness: Strictness) -> [[PHAsset]] {
-        let toCheckTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map { (index, asset) -> OSTuple<NSString, NSData> in
+        let rawTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map { (index, asset) -> OSTuple<NSString, NSData> in
             let imageData = asset.thumbnailSync?.pngData()
             return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
         }
+        let toCheckTuples = rawTuples.filter({ $0.second != nil })
 
         let providerId = OSImageHashingProviderIdForHashingQuality(.medium)
         let provider = OSImageHashingProviderFromImageHashingProviderId(providerId);
