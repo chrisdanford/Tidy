@@ -24,8 +24,9 @@ class Notifications {
         let center = UNUserNotificationCenter.current()
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
 
-        if badgeCount > 0 {
-            let body = state.notificationLines.map({ return "➡ " + $0 }).joined(separator: "\n")
+        let notificationLines = state.notificationLines
+        if notificationLines.count > 0 {
+            let body = notificationLines.map({ return "➡ " + $0 }).joined(separator: "\n")
 
             let content = UNMutableNotificationContent()
             content.title = NSString.localizedUserNotificationString(forKey: "You can recover storage space", arguments: nil)
