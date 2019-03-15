@@ -327,17 +327,16 @@ class DuplicatesViewController: UIViewController, StoreSubscriber {
         let (addedRects, removedRects) = differencesBetweenRects(previousPreheatRect, preheatRect)
         let addedAssets = addedRects
             .flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
-            //.filter { indexPath in  && indexPath.item < sectionModels.count }
             .compactMap { indexPath in assetFor(cell: sectionModels[indexPath.section].cells[indexPath.item]) }
         let removedAssets = removedRects
             .flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
-            //.filter { indexPath in indexPath.section > Section.instructions.rawValue && indexPath.item < sectionModels.count }
             .compactMap { indexPath in assetFor(cell: sectionModels[indexPath.section].cells[indexPath.item]) }
         
         
         // Update the assets the PHCachingImageManager is caching.
         let options = PHImageRequestOptions()
         options.isNetworkAccessAllowed = true
+        NSLog("addedAssets \(addedAssets) removedAssets \(removedAssets)")
         imageManager.startCachingImages(for: addedAssets,
                                         targetSize: thumbnailSize, contentMode: .aspectFill, options: options)
         imageManager.stopCachingImages(for: removedAssets,

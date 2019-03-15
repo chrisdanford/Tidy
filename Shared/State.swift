@@ -58,7 +58,7 @@ enum AppAction : Action {
 func appReducer(action: Action, state: AppState?) -> AppState {
     var newState = state!
     let appAction = action as! AppAction
-    NSLog("appReducer action \(appAction)")
+    //NSLog("appReducer action \(appAction)")
     switch appAction {
     case .setDuplicates(let duplicates):
         newState.duplicates = duplicates

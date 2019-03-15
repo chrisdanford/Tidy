@@ -357,7 +357,7 @@ class ViewModel {
                 vc.set(gridDataSource: gridDataSource)
                 return .push(vc)
             case .clearRecentlyDeleted:
-                let title = "Recently Deleted photos can only be emptied from the Photos app."
+                let title = "Recently Deleted photos can only be emptied from the Photos app"
                 let message = "Navigate to the album named 'Recently Deleted' then delete all items to reclaim this space in your iCloud quota."
                 let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
                 let action1 = UIAlertAction(title: "Continue to Photos", style: .default) { (action:UIAlertAction) in

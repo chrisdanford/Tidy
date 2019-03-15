@@ -98,10 +98,8 @@ class AssetGridView: UIView {
         let scale = UIScreen.main.scale
         let thumbnailSize = CGSize(width: 50 * scale, height: 50 * scale)
     
-        let options = PHImageRequestOptions()
-        options.isNetworkAccessAllowed = true
         let requestAsset = model.assetModel.asset
-        imageRequestID = imageManager.requestImage(for: requestAsset, targetSize: thumbnailSize, contentMode: .aspectFill, options: options, resultHandler: { [weak self] image, _ in
+        imageRequestID = imageManager.requestImage(for: requestAsset, targetSize: thumbnailSize, contentMode: .aspectFill, options: nil, resultHandler: { [weak self] image, _ in
             // UIKit may have recycled this cell by the handler's activation time.
             // Set the cell's thumbnail image only if it's still showing the same asset.
             if requestAsset.localIdentifier == model.assetModel.asset.localIdentifier {
