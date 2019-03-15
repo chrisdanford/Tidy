@@ -658,7 +658,7 @@
 				DEVELOPMENT_TEAM = S57FKAF7UT;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Pods/**";
 				INFOPLIST_FILE = iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.chrisdanford.Tidy;
 				PRODUCT_NAME = Tidy;
@@ -679,7 +679,7 @@
 				DEVELOPMENT_TEAM = S57FKAF7UT;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Pods/**";
 				INFOPLIST_FILE = iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.chrisdanford.Tidy;
 				PRODUCT_NAME = Tidy;
