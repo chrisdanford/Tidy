@@ -18,7 +18,6 @@ class Notifications {
     }
     
     static func setBadgeAndScheduleNotifications(state: AppState) {
-        let badgeCount = state.badgeCount
         UIApplication.shared.applicationIconBadgeNumber = state.badgeCount
 
         let center = UNUserNotificationCenter.current()

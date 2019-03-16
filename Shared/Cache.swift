@@ -21,7 +21,7 @@ class Cache<K, V: Codable> where K : Hashable, K: Codable {
         return dir.appendingPathComponent(filenamePrefix + ".plist")
     }
     
-    var data: [K: V] = [:]
+    var dict: [K: V] = [:]
     var throttledPersistToDisk: () -> () = { }
     
     init(filenamePrefix: String, currentCacheVersion: Int) {
@@ -33,39 +33,24 @@ class Cache<K, V: Codable> where K : Hashable, K: Codable {
         let flushInterval: Double = 5
         
         throttledPersistToDisk = throttle(maxFrequency: flushInterval) { [weak self] in
-            self?.persistToDisk()
+            self?.writeToDisk()
         }
         loadFromDisk()
     }
     
     func loadFromDisk() {
-        // reading from cache is slow.  Do this async.
         queue.sync {
-            self.data = self.dataFromDisk() ?? [:]
-        }
-    }
-    
-    private func dataFromDisk() -> [K: V]? {
-        do {
-            let rawData = try Data(contentsOf: file)
-            let decoded = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(rawData) as? [K: V]
-            if let dict = decoded {
-                NSLog("Retrieved \(dict.count) items")
-                return dict
-            } else {
-                NSLog("Unarchive failed")
-                return nil
-            }
-        } catch {
-            NSLog("Read file or unarchive failed")
-            return nil
+            NSLog("loadFromDisk self.dict 1 \(self.dict)")
+            let dataFromDisk = self.readFromDisk()
+            self.dict = dataFromDisk ?? [:]
+            NSLog("loadFromDisk self.dict 2 \(self.dict)")
         }
     }
     
     func get(key: K) -> V? {
         var value: V?
         queue.sync {
-            value = data[key]
+            value = dict[key]
         }
         return value
     }
@@ -73,11 +58,11 @@ class Cache<K, V: Codable> where K : Hashable, K: Codable {
     func get(key: K, computeValue: () -> V?) -> V? {
         var value: V?
         queue.sync {
-            value = data[key]
+            value = dict[key]
             if value == nil {
                 value = computeValue()
                 if value != nil {
-                    data[key] = value
+                    dict[key] = value
                     self.throttledPersistToDisk()
                 }
             }
@@ -87,7 +72,7 @@ class Cache<K, V: Codable> where K : Hashable, K: Codable {
 
     func put(key: K, value: V) {
         queue.sync {
-            data[key] = value
+            dict[key] = value
         }
         self.throttledPersistToDisk()
     }
@@ -95,11 +80,11 @@ class Cache<K, V: Codable> where K : Hashable, K: Codable {
     func filterToKeys(keys: Set<K>) {
         var changed = false
         queue.sync {
-            let count = data.count
-            data = data.filter({ keys.contains($0.key) })
-            if count != data.count {
+            let count = dict.count
+            dict = dict.filter({ keys.contains($0.key) })
+            if count != dict.count {
                 changed = true
-                NSLog("before \(count) and after \(data.count)")
+                NSLog("before \(count) and after \(dict.count)")
             }
         }
         if changed {
@@ -107,19 +92,28 @@ class Cache<K, V: Codable> where K : Hashable, K: Codable {
         }
     }
     
-    func persistToDisk() {
-        var data: Data? = nil
-        queue.sync {
-            do {
-                data = try NSKeyedArchiver.archivedData(withRootObject: self.data, requiringSecureCoding: false)
-            } catch {
-                NSLog("encode Failed")
-            }
-        }
+    private func readFromDisk() -> [K: V]? {
         do {
-            try data?.write(to: file, options: Data.WritingOptions.atomic)
-        } catch {
-            NSLog("Write Failed")
+            let data = try Data(contentsOf: file)
+            let decoder = PropertyListDecoder()
+            return try decoder.decode([K:V].self, from: data)
+        } catch let error {
+            NSLog("readFromDisk error: \(error)")
+            return nil
+        }
+    }
+    
+    private func writeToDisk() {
+        var dictCopy: [K: V]?
+        queue.sync {
+            dictCopy = self.dict
+        }
+        let encoder = PropertyListEncoder()
+        do {
+            let data = try encoder.encode(dictCopy)
+            try data.write(to: file)
+        } catch let error {
+            NSLog("writeToDisk error: \(error)")
         }
     }
 }

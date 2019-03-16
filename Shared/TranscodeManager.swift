@@ -109,9 +109,11 @@ class TranscodeManager {
 
         fillWithWork()
         
-        // PhotoKit seems to not benefit at all from parallelization and takes ~0.5ms per call no matter how many threads.
         // Boost the processing of any assets for which we have the full version already downloaded but we haven't yet transcoded.
         // It's important to process these before future downloads bump them out of the Photos cache.
+        //
+        // We do this from a single thread because PhotoKit calls, because they're bottlecked by RPC to assetsd, don't benefit
+        // at all from parallelization.  The throughput of calls is ~2 per 1ms no matter how many worker threads there are.
         for asset in assetsNeedsWork {
             if cancellationTokenSource.isCancelling {
                 break
