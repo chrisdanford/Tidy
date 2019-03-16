@@ -53,7 +53,8 @@ class PHAssetReplace {
         case result(Result)
     }
 
-    static let maxBatchCount = 50
+    static let maxBatchSize = 50
+    static let minBatchSize = 1
     static let maxBatchSizeBytes: UInt64 = 4 * 1024 * 1024 * 1024
     static let maximumQueuedBytesToApplyBeforePausing = maxBatchSizeBytes * 10
 
@@ -67,8 +68,8 @@ class PHAssetReplace {
         var sizeBytes: UInt64 = 0
         for (i, asset) in assets.enumerated() {
             sizeBytes += asset.slow_resourceStats.totalResourcesSizeBytes
-            if sizeBytes > maxBatchSizeBytes || i == maxBatchCount {
-                return min(i, 1)
+            if sizeBytes > maxBatchSizeBytes || i == maxBatchSize {
+                return max(i, minBatchSize)
             }
         }
         return assets.count
