@@ -139,7 +139,7 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="duplicate" id="NIQ-ex-lHW">
+                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="duplicatePhoto" id="NIQ-ex-lHW">
                                             <rect key="frame" x="20" y="12" width="75" height="75"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </imageView>
@@ -449,6 +449,6 @@ alksda</string>
     </scenes>
     <resources>
         <image name="AppIconButton" width="145" height="145"/>
-        <image name="duplicate" width="75" height="75"/>
+        <image name="duplicatePhoto" width="75" height="75"/>
     </resources>
 </document>
