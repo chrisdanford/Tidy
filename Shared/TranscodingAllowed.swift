@@ -10,7 +10,7 @@ import UIKit
 import Reachability
 
 public extension Notification.Name {
-    public static let transcodingAllowedChanged = Notification.Name("transcodingAllowed")
+    static let transcodingAllowedChanged = Notification.Name("transcodingAllowed")
 }
 
 class TranscodingAllowed {
@@ -72,7 +72,9 @@ class TranscodingAllowed {
             switch UIDevice.current.batteryState {
             case .unplugged:
                 power = false
-            case .unknown, .charging, .full:
+            case .unknown, .charging, .full:  // unknown means "plugged in but not charging"
+                power = true
+            @unknown default:
                 power = true
             }
 

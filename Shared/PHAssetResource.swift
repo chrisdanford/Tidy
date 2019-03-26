@@ -86,6 +86,8 @@ extension PHAsset {
             return .audio
         case .unknown:
             return nil
+        @unknown default:
+            return nil
         }
     }
 }
