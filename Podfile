@@ -11,5 +11,7 @@ target 'Tidy iOS' do
   pod 'CocoaImageHashing', :git => 'https://github.com/chrisdanford/cocoaimagehashing.git', :commit => 'd0d1c02bba48d66a5037d65e86eaa1a2e66fe603', :inhibit_warnings => true
   pod 'ReachabilitySwift', '4.3.0', :inhibit_warnings => true
   pod 'JGProgressHUD', '2.0.3', :inhibit_warnings => true
+  pod 'RxSwift', '~> 4.0', :inhibit_warnings => true
+  pod 'RxCocoa', '~> 4.0', :inhibit_warnings => true
 end
 
