@@ -20,8 +20,8 @@ class TranscodingAllowed {
         case allowed
         case deviceCantExportHEVC
         case noWiFi
-        case noPower
-        case noPowerNoWiFi
+        case lowPowerMode
+        case lowPowerModeNoWiFi
         
         var friendlyString: String {
             switch self {
@@ -31,9 +31,9 @@ class TranscodingAllowed {
                 return "'High Efficiency' not supported"
             case .noWiFi:
                 return "Paused: connect WiFi"
-            case .noPower:
+            case .lowPowerMode:
                 return "Paused: connect power"
-            case .noPowerNoWiFi:
+            case .lowPowerModeNoWiFi:
                 return "Paused: connect WiFi and power"
             }
         }
@@ -68,27 +68,19 @@ class TranscodingAllowed {
         queue.sync {
             let wifi = reachability.connection == .wifi
             
-            let power: Bool
-            switch UIDevice.current.batteryState {
-            case .unplugged:
-                power = false
-            case .unknown, .charging, .full:  // unknown means "plugged in but not charging"
-                power = true
-            @unknown default:
-                power = true
-            }
+            let lowPowerMode = ProcessInfo.processInfo.isLowPowerModeEnabled
 
             let newStatus: Status
             if !deviceCanExportHEVC {
                 newStatus = .deviceCantExportHEVC
-            } else if wifi && power {
+            } else if !lowPowerMode && wifi {
                 newStatus = .allowed
-            } else if !power && !wifi {
-                newStatus = .noPowerNoWiFi
+            } else if lowPowerMode && !wifi {
+                newStatus = .lowPowerModeNoWiFi
             } else if !wifi {
                 newStatus = .noWiFi
             } else {
-                newStatus = .noPower
+                newStatus = .lowPowerMode
             }
             statusChanged = lastStatus != newStatus
             lastStatus = newStatus
